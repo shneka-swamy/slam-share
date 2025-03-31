@@ -133,7 +133,7 @@ int main(int argc, char **argv)
 #ifdef SOCKET_PROGRAM
     /*
     //Aditya setup the sockets for file transfer
-    boost::asio::io_service io_service;
+    boost::asio::io_context io_service;
     //listen for new connection
     //tcp::acceptor acceptor_(io_service, tcp::endpoint(tcp::v4(), 65000 ));
     boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string("127.0.0.1"),65000);

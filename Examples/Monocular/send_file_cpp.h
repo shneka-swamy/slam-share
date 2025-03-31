@@ -1,5 +1,6 @@
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
+#include <boost/asio/io_context.hpp>
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 
@@ -20,7 +21,7 @@ namespace bio = boost::iostreams;
 class async_tcp_client
 {
 public:
-  async_tcp_client(boost::asio::io_service& io_service, const std::string& server, const std::string& path)
+  async_tcp_client(boost::asio::io_context& io_service, const std::string& server, const std::string& path)
     : resolver_(io_service), socket_(io_service)
   {
     size_t pos = server.find(':');
@@ -260,7 +261,7 @@ public:
     io_service_.stop();
   }
 private:
-  boost::asio::io_service io_service_;
+  boost::asio::io_context io_service_;
   boost::asio::ip::tcp::acceptor acceptor_;
 };
 
@@ -268,7 +269,7 @@ void send_data(std::string const& filename, std::string const& adr = "localhost:
 {
       try
 	{
-	  boost::asio::io_service io_service;
+	  boost::asio::io_context io_service;
 	  {
 	    boost::mutex::scoped_lock lk(debug_mutex);
 	    std::cout << "Adress is: " << adr << " and file is: " << filename << '\n';
