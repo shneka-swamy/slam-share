@@ -38,6 +38,7 @@ namespace ORB_SLAM3
 {
    
     //Shared memory variables
+    boost::interprocess::shared_memory_object::remove("MySharedMemory");
     boost::interprocess::managed_shared_memory segment(boost::interprocess::open_or_create, "MySharedMemory",10737418240,(void*)0x30000000);
     //boost::interprocess::fixed_managed_shared_memory segment(boost::interprocess::open_only, "MySharedMemory",(void*)0x300000000);
     // TODO: Uncomment this part -- 1 line below
