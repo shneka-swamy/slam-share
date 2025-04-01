@@ -72,6 +72,7 @@ int main(int argc, char **argv)
         tot_images += nImages[seq];
     }
 
+    cout << "Left the for loop "<<endl;
     // Vector for tracking time statistics
     vector<float> vTimesTrack;
     vTimesTrack.resize(tot_images);
