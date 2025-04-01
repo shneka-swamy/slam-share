@@ -208,8 +208,8 @@ void LoadImages(const string &strImagePath, const string &strPathTimes,
                 vector<string> &vstrImages, vector<double> &vTimeStamps)
 {   
     cout << "In load image"<<endl;
-    ifstream fTimes;
     cout << "opening folder"<<strPathTimes.c_str();
+    ifstream fTimes;
     fTimes.open(strPathTimes.c_str());
     vTimeStamps.reserve(5000);
     vstrImages.reserve(5000);
