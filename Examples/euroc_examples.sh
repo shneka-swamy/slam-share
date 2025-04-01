@@ -3,8 +3,8 @@ pathDatasetEuroc='../../CollabAR/EuRoC/' #Example, it is necesary to change it b
 
 #------------------------------------
 # Monocular Examples
-echo "Launching MH01 with Monocular sensor"
-../build/debug/bin/mono_euroc ../Vocabulary/ORBvoc.txt ./Monocular/EuRoC.yaml "$pathDatasetEuroc"/machine_hall/MH_01 ./Monocular/EuRoC_TimeStamps/MH01.txt dataset-MH01_mono
+# echo "Launching MH01 with Monocular sensor"
+# ../build/debug/bin/mono_euroc ../Vocabulary/ORBvoc.txt ./Monocular/EuRoC.yaml "$pathDatasetEuroc"/machine_hall/MH_01 ./Monocular/EuRoC_TimeStamps/MH01.txt dataset-MH01_mono
 
 # echo "Launching MH02 with Monocular sensor"
 # ../build/debug/bin/mono_euroc ../Vocabulary/ORBvoc.txt ./Monocular/EuRoC.yaml "$pathDatasetEuroc"/machine_hall/MH_02 ./Monocular/EuRoC_TimeStamps/MH02.txt dataset-MH02_mono
@@ -93,8 +93,8 @@ echo "Launching MH01 with Monocular sensor"
 
 # #------------------------------------
 # # Monocular-Inertial Examples
-# echo "Launching MH01 with Monocular-Inertial sensor"
-# ../build/debug/bin/mono_inertial_euroc ../Vocabulary/ORBvoc.txt ./Monocular-Inertial/EuRoC.yaml "$pathDatasetEuroc"/machine_hall/MH_01 ./Monocular-Inertial/EuRoC_TimeStamps/MH01.txt dataset-MH01_monoi
+echo "Launching MH01 with Monocular-Inertial sensor"
+../build/debug/bin/mono_inertial_euroc ../Vocabulary/ORBvoc.txt ./Monocular-Inertial/EuRoC.yaml "$pathDatasetEuroc"/machine_hall/MH_01 ./Monocular-Inertial/EuRoC_TimeStamps/MH01.txt dataset-MH01_monoi
 
 # echo "Launching MH02 with Monocular-Inertial sensor"
 # ../build/debug/bin/mono_inertial_euroc ../Vocabulary/ORBvoc.txt ./Monocular-Inertial/EuRoC.yaml "$pathDatasetEuroc"/machine_hall/MH_02 ../Monocular-Inertial/EuRoC_TimeStamps/MH02.txt dataset-MH02_monoi
