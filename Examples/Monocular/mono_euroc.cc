@@ -61,9 +61,10 @@ int main(int argc, char **argv)
     nImages.resize(num_seq);
 
     int tot_images = 0;
-    cout << "Before the for loop " << endl;
+    cout << "Before the for loop " << num_seq << endl;
     for (seq = 0; seq<num_seq; seq++)
     {
+        cout<<"Entered the for loop" << endl;
         cout << "Loading images for sequence " << seq << "...";
         LoadImages(string(argv[(2*seq)+3]) + "/mav0/cam0/data", string(argv[(2*seq)+4]), vstrImageFilenames[seq], vTimestampsCam[seq]);
         cout << "LOADED!" << endl;
