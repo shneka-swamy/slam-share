@@ -1,6 +1,7 @@
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include <boost/asio/io_context.hpp>
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 
@@ -46,41 +47,51 @@ public:
       boost::mutex::scoped_lock lk(debug_mutex);
       std::cout << "Request size: " << request_.size() << std::endl;
     }
-    tcp::resolver::query query(server_ip_or_host, port_string);
-    resolver_.async_resolve(query, boost::bind(&async_tcp_client::handle_resolve, this, boost::asio::placeholders::error, boost::asio::placeholders::iterator));
+    resolver_.async_resolve(server_ip_or_host, port_string, 
+                            boost::bind(&async_tcp_client::handle_resolve, this,
+                                        boost::asio::placeholders::error,
+                                        boost::asio::placeholders::results));
   };
 private:
-  void handle_resolve(const boost::system::error_code & err, tcp::resolver::iterator endpoint_iterator)
+  void handle_resolve(const boost::system::error_code & err, tcp::resolver::results_type endpoints)
   {
     if(!err)
       {
-	tcp::endpoint endpoint = *endpoint_iterator;
-	socket_.async_connect(endpoint, boost::bind(&async_tcp_client::handle_connect, this, boost::asio::placeholders::error, ++endpoint_iterator));
+      auto endpoint_iterator = endpoints.begin();
+      if (endpoint_iterator != endpoints.end()) {
+	      socket_.async_connect(*endpoint_iterator,
+                             boost::bind(&async_tcp_client::handle_connect, this,
+                                         boost::asio::placeholders::error,
+                                         ++endpoint_iterator));
       }
-    else
-      {
-	boost::mutex::scoped_lock lk(debug_mutex);
-	std::cout << "Error: " << err.message() << '\n';
-      }
+    } else {
+      boost::mutex::scoped_lock lk(debug_mutex);
+      std::cout << "Error: " << err.message() << '\n';
+    }
   };
 
-  void handle_connect(const boost::system::error_code &err, tcp::resolver::iterator endpoint_iterator)
-  {
+  void handle_connect(const boost::system::error_code &err, tcp::resolver::results_type::iterator endpoint_iterator) {
     if(!err)
       {
-	boost::asio::async_write(socket_, request_, boost::bind(&async_tcp_client::handle_write_file, this, boost::asio::placeholders::error));
+	boost::asio::async_write(socket_, request_, 
+                          boost::bind(&async_tcp_client::handle_write_file, this, 
+                                      boost::asio::placeholders::error));
       }
-    else if(endpoint_iterator != tcp::resolver::iterator())
+    else if(endpoint_iterator != tcp::resolver::results_type::iterator())
       {
-	socket_.close();
-	tcp::endpoint endpoint = *endpoint_iterator;
-	socket_.async_connect(endpoint, boost::bind(&async_tcp_client::handle_connect, this, boost::asio::placeholders::error, ++endpoint_iterator));
-      }
+      socket_.close();
+      tcp::endpoint endpoint = *endpoint_iterator;
+      socket_.async_connect(endpoint,
+                            boost::bind(&async_tcp_client::handle_connect, this,
+                                        boost::asio::placeholders::error,
+                                        ++endpoint_iterator));
+    }
     else
       {
 	boost::mutex::scoped_lock lk(debug_mutex);
 	std::cout << "Error: " << err.message() << '\n';
       };
+    
   }
 
   void handle_write_file(const boost::system::error_code& err)
@@ -126,7 +137,7 @@ private:
 class async_tcp_connection: public boost::enable_shared_from_this<async_tcp_connection>
 {
 public:
-  async_tcp_connection(boost::asio::io_service& io_service)
+  async_tcp_connection(boost::asio::io_context& io_service)
     : socket_(io_service), file_size(0)
   {
   }

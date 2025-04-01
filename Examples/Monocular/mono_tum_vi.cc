@@ -63,7 +63,10 @@ void rec_data(void)
 string read_(tcp::socket & socket) {
        boost::asio::streambuf buf;
        boost::asio::read_until( socket, buf, "\n" );
-       string data = boost::asio::buffer_cast<const char*>(buf.data());
+
+       std::istream is(&buf);
+       std::string data;
+       std::getline(is, data);
        return data;
 }
 
