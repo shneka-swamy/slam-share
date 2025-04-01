@@ -64,7 +64,7 @@ int main(int argc, char **argv)
     cout << "Before the for loop " << num_seq << endl;
     for (seq = 0; seq<num_seq; seq++)
     {
-        cout<<"Entered the for loop" << endl;
+        cout<<"Entered the for loop" << seq << endl;
         cout << "Loading images for sequence " << seq << "...";
         LoadImages(string(argv[(2*seq)+3]) + "/mav0/cam0/data", string(argv[(2*seq)+4]), vstrImageFilenames[seq], vTimestampsCam[seq]);
         cout << "LOADED!" << endl;
