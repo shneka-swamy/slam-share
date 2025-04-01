@@ -61,6 +61,7 @@ int main(int argc, char **argv)
     nImages.resize(num_seq);
 
     int tot_images = 0;
+    cout << "Before the for loop " << endl;
     for (seq = 0; seq<num_seq; seq++)
     {
         cout << "Loading images for sequence " << seq << "...";
