@@ -1,11 +1,15 @@
 {
-  "builtin-baseline": "d5ec528843d29e3a52d745a64b469f810b2cedbf",
   "dependencies": [
-    { "name": "pangolin", "default-features": false, "features": [ "jpeg", "png" ] }
-  ],
-  "overrides": [
-    { "name": "opencv", "version": "4.3.0" },
-    { "name": "boost", "version":"1.66.0" },
-    { "name": "eigen3", "version": "3.4.0" }
+    {
+      "name": "pangolin",
+      "default-features": false,
+      "features": [
+        "jpeg",
+        "png"
+      ]
+    },
+    { "name": "opencv" },
+    { "name": "boost" },
+    { "name": "eigen3" }
   ]
 }

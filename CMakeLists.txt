@@ -3,7 +3,8 @@ project(ORB_SLAM3)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package(OpenCV 4.4 REQUIRED)  # tested with 3.2
+#find_package(OpenCV 4.4 REQUIRED)  # tested with 3.2
+find_package(OpenCV CONFIG REQUIRED)  # tested with 3.2
 find_package(Eigen3 3.2.0 REQUIRED) # tested with 3.2.0
 find_package(Pangolin REQUIRED)
 find_package(Boost 1.66.0 REQUIRED COMPONENTS log_setup log system thread)

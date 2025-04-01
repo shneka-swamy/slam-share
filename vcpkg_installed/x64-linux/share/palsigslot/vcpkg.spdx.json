@@ -1,0 +1,110 @@
+{
+  "$schema": "https://raw.githubusercontent.com/spdx/spdx-spec/v2.2.1/schemas/spdx-schema.json",
+  "spdxVersion": "SPDX-2.2",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "documentNamespace": "https://spdx.org/spdxdocs/palsigslot-x64-linux-1.2.2-b8e5d9bc-20ce-4c77-831a-a1ba969db191",
+  "name": "palsigslot:x64-linux@1.2.2 79d81ff7b440c3dfcd9715021d1050bfe89075db3203d1f22f71af3e252172f6",
+  "creationInfo": {
+    "creators": [
+      "Tool: vcpkg-2025-03-22-d4dd14112c2026ee57e59f966ecfa3b9137bd143"
+    ],
+    "created": "2025-04-01T03:23:52Z"
+  },
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "GENERATES",
+      "relatedSpdxElement": "SPDXRef-binary"
+    },
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-file-0"
+    },
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-file-1"
+    },
+    {
+      "spdxElementId": "SPDXRef-binary",
+      "relationshipType": "GENERATED_FROM",
+      "relatedSpdxElement": "SPDXRef-port"
+    },
+    {
+      "spdxElementId": "SPDXRef-file-0",
+      "relationshipType": "CONTAINED_BY",
+      "relatedSpdxElement": "SPDXRef-port"
+    },
+    {
+      "spdxElementId": "SPDXRef-file-1",
+      "relationshipType": "CONTAINED_BY",
+      "relatedSpdxElement": "SPDXRef-port"
+    }
+  ],
+  "packages": [
+    {
+      "name": "palsigslot",
+      "SPDXID": "SPDXRef-port",
+      "versionInfo": "1.2.2",
+      "downloadLocation": "git+https://github.com/Microsoft/vcpkg@db0f38f4ec93dc19183222e89759d4355733e75f",
+      "homepage": "https://github.com/palacaze/sigslot",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "description": "A header-only, thread safe implementation of signal-slots for C++.",
+      "comment": "This is the port (recipe) consumed by vcpkg."
+    },
+    {
+      "name": "palsigslot:x64-linux",
+      "SPDXID": "SPDXRef-binary",
+      "versionInfo": "79d81ff7b440c3dfcd9715021d1050bfe89075db3203d1f22f71af3e252172f6",
+      "downloadLocation": "NONE",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "comment": "This is a binary package built by vcpkg."
+    },
+    {
+      "SPDXID": "SPDXRef-resource-0",
+      "name": "palacaze/sigslot",
+      "downloadLocation": "git+https://github.com/palacaze/sigslot@v1.2.2",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "checksums": [
+        {
+          "algorithm": "SHA512",
+          "checksumValue": "ed8614d9c2e418259b1bce6d0a528b54939700876969c5e8dfcfc466c167690180cb18324602f83d521c79dcba2565e5317647416b70cf8773860ab956d9b62f"
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "fileName": ".//media/jacob/ba56ef9d-5f5e-4247-8742-3bc72f6cec54/vcpkg/buildtrees/versioning_/versions/palsigslot/db0f38f4ec93dc19183222e89759d4355733e75f/portfile.cmake",
+      "SPDXID": "SPDXRef-file-0",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f6b607438e2eb829fe4026145d177a7f20397501275a4545ec7b6c26d2f09246"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".//media/jacob/ba56ef9d-5f5e-4247-8742-3bc72f6cec54/vcpkg/buildtrees/versioning_/versions/palsigslot/db0f38f4ec93dc19183222e89759d4355733e75f/vcpkg.json",
+      "SPDXID": "SPDXRef-file-1",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "fee059ddef1f63cdeda42c2bbb6f4e4ede9150158478857ec9126e9f2d0708a2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    }
+  ]
+}

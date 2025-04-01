@@ -1,0 +1,154 @@
+{
+  "$schema": "https://raw.githubusercontent.com/spdx/spdx-spec/v2.2.1/schemas/spdx-schema.json",
+  "spdxVersion": "SPDX-2.2",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "documentNamespace": "https://spdx.org/spdxdocs/pangolin-x64-linux-0.9.2-a849d34e-4fbe-4341-9704-873bff90a16a",
+  "name": "pangolin:x64-linux@0.9.2 acf00f7afeae76acdb2bb1a9a975e17c1595305eaf068e0af925ffee82dda2df",
+  "creationInfo": {
+    "creators": [
+      "Tool: vcpkg-2025-03-22-d4dd14112c2026ee57e59f966ecfa3b9137bd143"
+    ],
+    "created": "2025-04-01T03:24:34Z"
+  },
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "GENERATES",
+      "relatedSpdxElement": "SPDXRef-binary"
+    },
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-file-0"
+    },
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-file-1"
+    },
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-file-2"
+    },
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-file-3"
+    },
+    {
+      "spdxElementId": "SPDXRef-binary",
+      "relationshipType": "GENERATED_FROM",
+      "relatedSpdxElement": "SPDXRef-port"
+    },
+    {
+      "spdxElementId": "SPDXRef-file-0",
+      "relationshipType": "CONTAINED_BY",
+      "relatedSpdxElement": "SPDXRef-port"
+    },
+    {
+      "spdxElementId": "SPDXRef-file-1",
+      "relationshipType": "CONTAINED_BY",
+      "relatedSpdxElement": "SPDXRef-port"
+    },
+    {
+      "spdxElementId": "SPDXRef-file-2",
+      "relationshipType": "CONTAINED_BY",
+      "relatedSpdxElement": "SPDXRef-port"
+    },
+    {
+      "spdxElementId": "SPDXRef-file-3",
+      "relationshipType": "CONTAINED_BY",
+      "relatedSpdxElement": "SPDXRef-port"
+    }
+  ],
+  "packages": [
+    {
+      "name": "pangolin",
+      "SPDXID": "SPDXRef-port",
+      "versionInfo": "0.9.2",
+      "downloadLocation": "git+https://github.com/Microsoft/vcpkg@71d44252a59ed3737ec204b4789bcd2d30d5e621",
+      "homepage": "https://github.com/stevenlovegrove/Pangolin",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "description": "Lightweight GUI Library",
+      "comment": "This is the port (recipe) consumed by vcpkg."
+    },
+    {
+      "name": "pangolin:x64-linux",
+      "SPDXID": "SPDXRef-binary",
+      "versionInfo": "acf00f7afeae76acdb2bb1a9a975e17c1595305eaf068e0af925ffee82dda2df",
+      "downloadLocation": "NONE",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "comment": "This is a binary package built by vcpkg."
+    },
+    {
+      "SPDXID": "SPDXRef-resource-0",
+      "name": "stevenlovegrove/Pangolin",
+      "downloadLocation": "git+https://github.com/stevenlovegrove/Pangolin@v0.9.2",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "checksums": [
+        {
+          "algorithm": "SHA512",
+          "checksumValue": "ef2461770def3b0752d23df0c9a0090b733943249404528d0b2ba985d08c9083aabe685e3fd00be08318ea7b90dc38e9735ab004124643619e6cf369d64f6321"
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "fileName": ".//media/jacob/ba56ef9d-5f5e-4247-8742-3bc72f6cec54/vcpkg/buildtrees/versioning_/versions/pangolin/71d44252a59ed3737ec204b4789bcd2d30d5e621/usage",
+      "SPDXID": "SPDXRef-file-0",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9ba26f0e87eba955704ef43e387f763cdf772ab73049db643b6178060e689b2d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".//media/jacob/ba56ef9d-5f5e-4247-8742-3bc72f6cec54/vcpkg/buildtrees/versioning_/versions/pangolin/71d44252a59ed3737ec204b4789bcd2d30d5e621/portfile.cmake",
+      "SPDXID": "SPDXRef-file-1",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2520126ce1cba12331faa00a6dab3a3f48eca51ac0376a90c0b41aa55108e778"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".//media/jacob/ba56ef9d-5f5e-4247-8742-3bc72f6cec54/vcpkg/buildtrees/versioning_/versions/pangolin/71d44252a59ed3737ec204b4789bcd2d30d5e621/devendor-palsigslot.patch",
+      "SPDXID": "SPDXRef-file-2",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "93a60f7bb3eb908727eb7b8ce249c201c3a0d42d02445a46b36c39099075488d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": ".//media/jacob/ba56ef9d-5f5e-4247-8742-3bc72f6cec54/vcpkg/buildtrees/versioning_/versions/pangolin/71d44252a59ed3737ec204b4789bcd2d30d5e621/vcpkg.json",
+      "SPDXID": "SPDXRef-file-3",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "cadc510bcc76844fe1d664311c36f50eda1d7fe2963481106cf0653febc6f946"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    }
+  ]
+}
