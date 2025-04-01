@@ -420,7 +420,7 @@ TIme spent ORB 25986.1
 TIme spent ORB 31159.4
 Calling GetCurrentMap from Track()
 Checked if new map is required. Runing a function in Shared memory
-In tracking, current maps have called few functions
+king, current maps have called few functions
 Tracking time: 0.0600384
 @@@@ Counted till: 36 images.
 TIme spent ORB 17180.5

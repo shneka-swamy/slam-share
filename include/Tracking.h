@@ -186,7 +186,7 @@ public:
 
 protected:
 
-    // Main tracking function. It is independent of the input sensor.
+    // Making function. It is independent of the input sensor.
     void Track();
 
     // Map initialization for stereo and RGB-D
