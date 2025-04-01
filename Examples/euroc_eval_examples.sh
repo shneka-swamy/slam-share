@@ -2,20 +2,20 @@
 pathDatasetEuroc='../../CollabAR/EuRoC/' #Example, it is necesary to change it by the dataset path
 
 # Single Session Example (Pure visual)
-echo "Launching MH01 with Stereo sensor"
-../build/debug/bin/stereo_euroc ../Vocabulary/ORBvoc.txt ./Stereo/EuRoC.yaml "$pathDatasetEuroc"/machine_hall/MH_01 ./Stereo/EuRoC_TimeStamps/MH01.txt dataset-MH01_stereo
-echo "------------------------------------"
-echo "Evaluation of MH01 trajectory with Stereo sensor"
-python ../evaluation/evaluate_ate_scale.py ../evaluation/Ground_truth/EuRoC_left_cam/MH01_GT.txt f_dataset-MH01_stereo.txt --plot MH01_stereo.pdf
+# echo "Launching MH01 with Stereo sensor"
+# ../build/debug/bin/stereo_euroc ../Vocabulary/ORBvoc.txt ./Stereo/EuRoC.yaml "$pathDatasetEuroc"/machine_hall/MH_01 ./Stereo/EuRoC_TimeStamps/MH01.txt dataset-MH01_stereo
+# echo "------------------------------------"
+# echo "Evaluation of MH01 trajectory with Stereo sensor"
+# python ../evaluation/evaluate_ate_scale.py ../evaluation/Ground_truth/EuRoC_left_cam/MH01_GT.txt f_dataset-MH01_stereo.txt --plot MH01_stereo.pdf
 
 
 
-# MultiSession Example (Pure visual)
-echo "Launching Machine Hall with Stereo sensor"
-../build/debug/bin/stereo_euroc ../Vocabulary/ORBvoc.txt ./Stereo/EuRoC.yaml "$pathDatasetEuroc"/machine_hall/MH_01 ./Stereo/EuRoC_TimeStamps/MH01.txt "$pathDatasetEuroc"/machine_hall/MH_02 ./Stereo/EuRoC_TimeStamps/MH02.txt "$pathDatasetEuroc"/machine_hall/MH_03 ./Stereo/EuRoC_TimeStamps/MH03.txt "$pathDatasetEuroc"/machine_hall/MH_04 ./Stereo/EuRoC_TimeStamps/MH04.txt "$pathDatasetEuroc"/machine_hall/MH_05 ./Stereo/EuRoC_TimeStamps/MH05.txt dataset-MH01_to_MH05_stereo
-echo "------------------------------------"
-echo "Evaluation of MAchine Hall trajectory with Stereo sensor"
-python ../evaluation/evaluate_ate_scale.py ../evaluation/Ground_truth/EuRoC_left_cam/MH_GT.txt f_dataset-MH01_to_MH05_stereo.txt --plot MH01_to_MH05_stereo.pdf
+# # MultiSession Example (Pure visual)
+# echo "Launching Machine Hall with Stereo sensor"
+# ../build/debug/bin/stereo_euroc ../Vocabulary/ORBvoc.txt ./Stereo/EuRoC.yaml "$pathDatasetEuroc"/machine_hall/MH_01 ./Stereo/EuRoC_TimeStamps/MH01.txt "$pathDatasetEuroc"/machine_hall/MH_02 ./Stereo/EuRoC_TimeStamps/MH02.txt "$pathDatasetEuroc"/machine_hall/MH_03 ./Stereo/EuRoC_TimeStamps/MH03.txt "$pathDatasetEuroc"/machine_hall/MH_04 ./Stereo/EuRoC_TimeStamps/MH04.txt "$pathDatasetEuroc"/machine_hall/MH_05 ./Stereo/EuRoC_TimeStamps/MH05.txt dataset-MH01_to_MH05_stereo
+# echo "------------------------------------"
+# echo "Evaluation of MAchine Hall trajectory with Stereo sensor"
+# python ../evaluation/evaluate_ate_scale.py ../evaluation/Ground_truth/EuRoC_left_cam/MH_GT.txt f_dataset-MH01_to_MH05_stereo.txt --plot MH01_to_MH05_stereo.pdf
 
 
 # Single Session Example (Visual-Inertial)
