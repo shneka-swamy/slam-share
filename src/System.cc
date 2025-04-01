@@ -47,7 +47,7 @@ namespace ORB_SLAM3
     //Create an allocator that allocates ints from the managed segment
     //boost::interprocess::allocator<char, boost::interprocess::fixed_managed_shared_memory::segment_manager> allocator_instance(segment.get_segment_manager());
     // TODO: Uncomment this part -- one line below
-    //boost::interprocess::allocator<char, boost::interprocess::managed_shared_memory::segment_manager> allocator_instance(segment.get_segment_manager());
+    boost::interprocess::allocator<char, boost::interprocess::managed_shared_memory::segment_manager> allocator_instance(segment.get_segment_manager());
 
     //cout<<"Installing Shared memory "<<endl;
 
