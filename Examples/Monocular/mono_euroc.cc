@@ -64,7 +64,6 @@ int main(int argc, char **argv)
     cout << "Before the for loop " << num_seq << endl;
     for (seq = 0; seq<num_seq; seq++)
     {
-        cout<<"Entered the for loop" << seq << endl;
         cout << "Loading images for sequence " << seq << "..." << endl;
         cout << string(argv[(2*seq)+3]) + "/mav0/cam0/data" << endl;
         cout << string(argv[(2*seq)+4]) << endl;
@@ -75,7 +74,6 @@ int main(int argc, char **argv)
         tot_images += nImages[seq];
     }
 
-    cout << "Left the for loop "<<endl;
     // Vector for tracking time statistics
     vector<float> vTimesTrack;
     vTimesTrack.resize(tot_images);
@@ -209,8 +207,7 @@ int main(int argc, char **argv)
 void LoadImages(const string &strImagePath, const string &strPathTimes,
                 vector<string> &vstrImages, vector<double> &vTimeStamps)
 {   
-    cout << "In load image"<<endl;
-    cout << "opening folder"<<strPathTimes.c_str();
+
     ifstream fTimes;
     fTimes.open(strPathTimes.c_str());
     vTimeStamps.reserve(5000);
@@ -223,7 +220,6 @@ void LoadImages(const string &strImagePath, const string &strPathTimes,
         {
             stringstream ss;
             ss << s;
-            cout<<"Pushing image" << strImagePath + "/" + ss.str() + ".png";
             vstrImages.push_back(strImagePath + "/" + ss.str() + ".png");
             double t;
             ss >> t;
