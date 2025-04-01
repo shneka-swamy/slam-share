@@ -1,5 +1,5 @@
 #!/bin/bash
-pathDatasetEuroc='/media/jacob/ba56ef9d-5f5e-4247-8742-3bc72f6cec54/CollabAR/EuRoC/' #Example, it is necesary to change it by the dataset path
+pathDatasetEuroc='/../../CollabAR/EuRoC/' #Example, it is necesary to change it by the dataset path
 
 #------------------------------------
 # Monocular Examples
