@@ -122,6 +122,8 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     std::pair<int *,std::size_t> ret = ORB_SLAM3::segment.find<int>("magic-num");
     int *magic_num = nullptr;
 
+    std::cout<<ret<<endl;
+    exit(0)
     if(ret.first == 0)
     {
         int newnum = 2;
