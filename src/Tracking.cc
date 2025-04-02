@@ -1774,8 +1774,7 @@ void Tracking::Track()
 
     if(mState==NOT_INITIALIZED)
     {
-        // TODO: Remove this later -- added to check if there is an error in this part of the code
-        cout << "Entered mState not initialized" << endl;
+        
         if(mSensor==System::STEREO || mSensor==System::RGBD || mSensor==System::IMU_STEREO)
             StereoInitialization();
         else
@@ -1800,7 +1799,6 @@ void Tracking::Track()
     {
         // System is initialized. Track Frame.
         // TODO: Remove this -- added for debugging
-        cout<<"Entered the else block before getting stuck"<<endl;
         bool bOK;
 
         #ifdef REGISTER_TIMES
@@ -1810,15 +1808,13 @@ void Tracking::Track()
         // Initial camera pose estimation using motion model or relocalization (if tracking is lost)
         if(!mbOnlyTracking)
         {
-            //TODO: Remove -- debugging
-            cout<<"Entered the only tracking block"<<endl;
+            
             // State OK
             // Local Mapping is activated. This is the normal behaviour, unless
             // you explicitly activate the "only tracking" mode.
             if(mState==OK)
             {
-                // TODO: Remove -- Debugging
-                cout << "Entered the state is ok block"<<endl;
+                
                 // Local Mapping might have changed some MapPoints tracked in last frame
                 CheckReplacedInLastFrame();
 
@@ -1858,8 +1854,7 @@ void Tracking::Track()
             }
             else
             {
-                // TODO : Remove -- debugging
-                cout << "In the else block" << endl;
+                
                 if (mState == RECENTLY_LOST)
                 {
                     Verbose::PrintMess("Lost for a short time", Verbose::VERBOSITY_NORMAL);
@@ -1915,8 +1910,8 @@ void Tracking::Track()
         }
         else
         {   
-            // TODO: remove -- debugging
-            cout << "Entered the else part of only tracking" << endl;
+            
+
             // Localization Mode: Local Mapping is deactivated (TODO Not available in inertial mode)
             if(mState==LOST)
             {
@@ -1988,11 +1983,10 @@ void Tracking::Track()
         }
 
 
-        cout << "Before the if statement -- map reference "<<endl;
+        
         if(!mCurrentFrame.mpReferenceKF)
             mCurrentFrame.mpReferenceKF = mpReferenceKF;
 
-        cout << "Starting the timer" <<endl;
         #ifdef REGISTER_TIMES
         std::chrono::steady_clock::time_point time_EndPosePred = std::chrono::steady_clock::now();
 
@@ -2000,14 +1994,14 @@ void Tracking::Track()
         vdPosePred_ms.push_back(timePosePred);
         #endif
 
-        cout << "Starting the steady clock timer"<<endl;
+        
         #ifdef REGISTER_TIMES
         std::chrono::steady_clock::time_point time_StartLMTrack = std::chrono::steady_clock::now();
         #endif
         // If we have an initial estimation of the camera pose and matching. Track the local map.
         if(!mbOnlyTracking)
         {   
-            cout << "In not of mbonly tracking"<<endl;
+            
             if(bOK)
             {
                 bOK = TrackLocalMap();
@@ -2018,7 +2012,7 @@ void Tracking::Track()
         }
         else
         {
-            cout<<"In the else part of mbonly tracking"<<endl;
+            
             // mbVO true means that there are few matches to MapPoints in the map. We cannot retrieve
             // a local map and therefore we do not perform TrackLocalMap(). Once the system relocalizes
             // the camera we will use the local map again.
@@ -2030,7 +2024,7 @@ void Tracking::Track()
             mState = OK;
         else if (mState == OK)
         {   
-            cout<<"In mstate is ok"<<endl;
+            
             if (mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO)
             {
                 Verbose::PrintMess("Track lost for less than one second...", Verbose::VERBOSITY_NORMAL);
@@ -2084,7 +2078,6 @@ void Tracking::Track()
         double timeLMTrack = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(time_EndLMTrack - time_StartLMTrack).count();
         vdLMTrack_ms.push_back(timeLMTrack);
 #endif
-        cout << "Going to update the drawer"<<endl;
         // Update drawer
         mpFrameDrawer->Update(this);
         if(!mCurrentFrame.mTcw.empty())
@@ -2092,7 +2085,6 @@ void Tracking::Track()
 
         if(bOK || mState==RECENTLY_LOST)
         {
-            cout<<"In state is recently lost"<<endl;
             // Update motion model
             if(!mLastFrame.mTcw.empty() && !mCurrentFrame.mTcw.empty())
             {
@@ -2160,7 +2152,6 @@ void Tracking::Track()
         // Reset if the camera get lost soon after initialization
         if(mState==LOST)
         {
-            cout<<"In final mstate is lost"<<endl;
             if(pCurrentMap->KeyFramesInMap()<=5)
             {
                 mpSystem->ResetActiveMap();
@@ -2174,15 +2165,14 @@ void Tracking::Track()
                     return;
                 }
                 
-            cout<<"Creating map in atlas"<<endl;    
+                
             CreateMapInAtlas();
         }
 
-        cout<< "Final if statement"<<endl;
+        
         if(!mCurrentFrame.mpReferenceKF)
             mCurrentFrame.mpReferenceKF = mpReferenceKF;
 
-        cout<<"The code must be working at this point -- final statement"<<endl; 
         mLastFrame = Frame(mCurrentFrame);
     }
 
@@ -2193,7 +2183,7 @@ void Tracking::Track()
     {
         // Store frame pose information to retrieve the complete camera trajectory afterwards.
         // TODO: Remove -- added for debugging
-        cout<<"Did not enter both the blocks -- rather present in recently lost"<<endl;
+        
         if(!mCurrentFrame.mTcw.empty())
         {
             cv::Mat Tcr = mCurrentFrame.mTcw*mCurrentFrame.mpReferenceKF->GetPoseInverse();
@@ -2890,7 +2880,6 @@ bool Tracking::TrackLocalMap()
     double timeUpdatedLM_ms = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(time_StartSearchLP - time_StartLMUpdate).count();
     vdUpdatedLM_ms.push_back(timeUpdatedLM_ms);
 #endif
-
     SearchLocalPoints();
 #ifdef REGISTER_TIMES
     std::chrono::steady_clock::time_point time_StartPoseOpt = std::chrono::steady_clock::now();
@@ -2983,7 +2972,6 @@ bool Tracking::TrackLocalMap()
 
     if((mnMatchesInliers>10)&&(mState==RECENTLY_LOST))
         return true;
-
 
     if (mSensor == System::IMU_MONOCULAR)
     {
@@ -3364,7 +3352,6 @@ void Tracking::UpdateLocalMap()
 {
     // This is for visualization
     mpAtlas->SetReferenceMapPoints(mvpLocalMapPoints);
-
     // Update
     UpdateLocalKeyFrames();
     UpdateLocalPoints();
@@ -3374,16 +3361,20 @@ void Tracking::UpdateLocalPoints()
 {
     mvpLocalMapPoints.clear();
 
-    int count_pts = 0;
+    // int count_pts = 0;
 
+    cout<<"Called boost process"<< mvpLocalKeyFrames.size()<<endl;
+    int count_debug = 0;
     for(vector<boost::interprocess::offset_ptr<KeyFrame> >::const_reverse_iterator itKF=mvpLocalKeyFrames.rbegin(), itEndKF=mvpLocalKeyFrames.rend(); itKF!=itEndKF; ++itKF)
     {
         boost::interprocess::offset_ptr<KeyFrame>  pKF = *itKF;
         const vector<boost::interprocess::offset_ptr<MapPoint> > vpMPs = pKF->GetMapPointMatches();
 
+        // count_debug ++;
+        // int count_debug2 = 0;
+        cout<<"Number of times to run the for loop is: " << vpMPs.size()<<endl;
         for(vector<boost::interprocess::offset_ptr<MapPoint> >::const_iterator itMP=vpMPs.begin(), itEndMP=vpMPs.end(); itMP!=itEndMP; itMP++)
         {
-
             boost::interprocess::offset_ptr<MapPoint>  pMP = *itMP;
             if(!pMP)
                 continue;
@@ -3391,21 +3382,30 @@ void Tracking::UpdateLocalPoints()
                 continue;
             if(!pMP->isBad())
             {
-                count_pts++;
+                //count_pts++;
                 mvpLocalMapPoints.push_back(pMP);
                 pMP->mnTrackReferenceForFrame=mCurrentFrame.mnId;
             }
+
+            // if (count_debug2 > 5){
+            //     break;
+            // }
+    
         }
+        if(count_debug >= 80){
+            break;
+        } 
+
     }
 }
 
-
+// NOTE: This function is same as that of ORB-SLAM3 with only the pointers changed to boost pointers
 void Tracking::UpdateLocalKeyFrames()
 {
     // Each map point vote for the keyframes in which it has been observed
     map<boost::interprocess::offset_ptr<KeyFrame> ,int> keyframeCounter;
     if(!mpAtlas->isImuInitialized() || (mCurrentFrame.mnId<mnLastRelocFrameId+2))
-    {
+    {      
         for(int i=0; i<mCurrentFrame.N; i++)
         {
             boost::interprocess::offset_ptr<MapPoint>  pMP = mCurrentFrame.mvpMapPoints[i];
@@ -3425,7 +3425,7 @@ void Tracking::UpdateLocalKeyFrames()
         }
     }
     else
-    {
+    {   
         for(int i=0; i<mLastFrame.N; i++)
         {
             // Using lastframe since current frame has not matches yet
@@ -3474,16 +3474,16 @@ void Tracking::UpdateLocalKeyFrames()
     }
 
     // Include also some not-already-included keyframes that are neighbors to already-included keyframes
+    //int count_debug = 5;
     for(vector<boost::interprocess::offset_ptr<KeyFrame> >::const_iterator itKF=mvpLocalKeyFrames.begin(), itEndKF=mvpLocalKeyFrames.end(); itKF!=itEndKF; itKF++)
     {
         // Limit the number of keyframes
-        if(mvpLocalKeyFrames.size()>80)
+        if(mvpLocalKeyFrames.size()>=80)
             break;
 
         boost::interprocess::offset_ptr<KeyFrame>  pKF = *itKF;
 
         const vector<boost::interprocess::offset_ptr<KeyFrame> > vNeighs = pKF->GetBestCovisibilityKeyFrames(10);
-
 
         for(vector<boost::interprocess::offset_ptr<KeyFrame> >::const_iterator itNeighKF=vNeighs.begin(), itEndNeighKF=vNeighs.end(); itNeighKF!=itEndNeighKF; itNeighKF++)
         {
@@ -3513,7 +3513,6 @@ void Tracking::UpdateLocalKeyFrames()
                 }
             }
         }
-
         boost::interprocess::offset_ptr<KeyFrame>  pParent = pKF->GetParent();
         if(pParent)
         {
@@ -3526,6 +3525,7 @@ void Tracking::UpdateLocalKeyFrames()
         }
     }
 
+    cout<<"Adding last 10 keyframes"<<endl;
     // Add 10 last temporal KFs (mainly for IMU)
     if((mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO) &&mvpLocalKeyFrames.size()<80)
     {

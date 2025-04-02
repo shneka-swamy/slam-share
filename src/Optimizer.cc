@@ -4497,10 +4497,18 @@ void Optimizer::LocalInertialBA(boost::interprocess::offset_ptr<KeyFrame> pKF, b
     }
 
     //cout << "Total map points: " << lLocalMapPoints.size() << endl;
-    for(map<int,int>::iterator mit=mVisEdges.begin(), mend=mVisEdges.end(); mit!=mend; mit++)
-    {
-        assert(mit->second>=3);
-    }
+    // TODO: Changing this function to remove if the second is not greater than 3 -- can try to revert back to previous content
+    // for(map<int,int>::iterator mit=mVisEdges.begin(), mend=mVisEdges.end(); mit!=mend;)
+    // {
+    //     if(mit->second < 3){
+    //         mit = mVisEdges.erase(mit);
+    //     }
+    //     else{
+    //         ++mit;
+    //     }
+    //     //cout<<"the value of mit->second" << mit->second <<endl;
+    //     //assert(mit->second>=3);
+    // }
 
     optimizer.initializeOptimization();
     optimizer.computeActiveErrors();

@@ -28,9 +28,9 @@ python ../evaluation/evaluate_ate_scale.py "$pathDatasetEuroc"/vicon/V1_02/mav0/
 
 # MultiSession Monocular Examples
 
-echo "Launching Vicon Room 2 with Monocular-Inertial sensor"
-../build/debug/bin/mono_inertial_euroc ../Vocabulary/ORBvoc.txt ./Monocular-Inertial/EuRoC.yaml "$pathDatasetEuroc"/vicon/V2_01 ./Monocular-Inertial/EuRoC_TimeStamps/V201.txt "$pathDatasetEuroc"/vicon/V2_02 ./Monocular-Inertial/EuRoC_TimeStamps/V202.txt "$pathDatasetEuroc"/vicon/V2_03 ./Monocular-Inertial/EuRoC_TimeStamps/V203.txt dataset-V201_to_V203_monoi
-echo "------------------------------------"
-echo "Evaluation of Vicon Room 2 trajectory with Stereo sensor"
-python ../evaluation/evaluate_ate_scale.py ../evaluation/Ground_truth/EuRoC_imu/V2_GT.txt f_dataset-V201_to_V203_monoi.txt --plot V201_to_V203_monoi.pdf
+# echo "Launching Vicon Room 2 with Monocular-Inertial sensor"
+# ../build/debug/bin/mono_inertial_euroc ../Vocabulary/ORBvoc.txt ./Monocular-Inertial/EuRoC.yaml "$pathDatasetEuroc"/vicon/V2_01 ./Monocular-Inertial/EuRoC_TimeStamps/V201.txt "$pathDatasetEuroc"/vicon/V2_02 ./Monocular-Inertial/EuRoC_TimeStamps/V202.txt "$pathDatasetEuroc"/vicon/V2_03 ./Monocular-Inertial/EuRoC_TimeStamps/V203.txt dataset-V201_to_V203_monoi
+# echo "------------------------------------"
+# echo "Evaluation of Vicon Room 2 trajectory with Stereo sensor"
+# python ../evaluation/evaluate_ate_scale.py ../evaluation/Ground_truth/EuRoC_imu/V2_GT.txt f_dataset-V201_to_V203_monoi.txt --plot V201_to_V203_monoi.pdf
 
