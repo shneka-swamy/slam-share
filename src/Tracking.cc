@@ -1803,20 +1803,22 @@ void Tracking::Track()
         cout<<"Entered the else block before getting stuck"<<endl;
         bool bOK;
 
-#ifdef REGISTER_TIMES
+        #ifdef REGISTER_TIMES
         std::chrono::steady_clock::time_point time_StartPosePred = std::chrono::steady_clock::now();
-#endif
+        #endif
 
         // Initial camera pose estimation using motion model or relocalization (if tracking is lost)
         if(!mbOnlyTracking)
         {
-
+            //TODO: Remove -- debugging
+            cout<<"Entered the only tracking block"<<endl;
             // State OK
             // Local Mapping is activated. This is the normal behaviour, unless
             // you explicitly activate the "only tracking" mode.
             if(mState==OK)
             {
-
+                // TODO: Remove -- Debugging
+                cout << "Entered the state is ok block"<<endl;
                 // Local Mapping might have changed some MapPoints tracked in last frame
                 CheckReplacedInLastFrame();
 
@@ -1856,7 +1858,8 @@ void Tracking::Track()
             }
             else
             {
-
+                // TODO : Remove -- debugging
+                cout << "In the else block" << endl;
                 if (mState == RECENTLY_LOST)
                 {
                     Verbose::PrintMess("Lost for a short time", Verbose::VERBOSITY_NORMAL);
@@ -1911,7 +1914,9 @@ void Tracking::Track()
 
         }
         else
-        {
+        {   
+            // TODO: remove -- debugging
+            cout << "Entered the else part of only tracking" << endl;
             // Localization Mode: Local Mapping is deactivated (TODO Not available in inertial mode)
             if(mState==LOST)
             {
@@ -1982,23 +1987,27 @@ void Tracking::Track()
             }
         }
 
+
+        cout << "Before the if statement -- map reference "<<endl;
         if(!mCurrentFrame.mpReferenceKF)
             mCurrentFrame.mpReferenceKF = mpReferenceKF;
 
-#ifdef REGISTER_TIMES
+        cout << "Starting the timer" <<endl;
+        #ifdef REGISTER_TIMES
         std::chrono::steady_clock::time_point time_EndPosePred = std::chrono::steady_clock::now();
 
         double timePosePred = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(time_EndPosePred - time_StartPosePred).count();
         vdPosePred_ms.push_back(timePosePred);
-#endif
+        #endif
 
-
-#ifdef REGISTER_TIMES
+        cout << "Starting the steady clock timer"<<endl;
+        #ifdef REGISTER_TIMES
         std::chrono::steady_clock::time_point time_StartLMTrack = std::chrono::steady_clock::now();
-#endif
+        #endif
         // If we have an initial estimation of the camera pose and matching. Track the local map.
         if(!mbOnlyTracking)
-        {
+        {   
+            cout << "In not of mbonly tracking"<<endl;
             if(bOK)
             {
                 bOK = TrackLocalMap();
@@ -2009,6 +2018,7 @@ void Tracking::Track()
         }
         else
         {
+            cout<<"In the else part of mbonly tracking"<<endl;
             // mbVO true means that there are few matches to MapPoints in the map. We cannot retrieve
             // a local map and therefore we do not perform TrackLocalMap(). Once the system relocalizes
             // the camera we will use the local map again.
@@ -2019,7 +2029,8 @@ void Tracking::Track()
         if(bOK)
             mState = OK;
         else if (mState == OK)
-        {
+        {   
+            cout<<"In mstate is ok"<<endl;
             if (mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO)
             {
                 Verbose::PrintMess("Track lost for less than one second...", Verbose::VERBOSITY_NORMAL);
@@ -2043,6 +2054,7 @@ void Tracking::Track()
         // Save frame if recent relocalization, since they are used for IMU reset (as we are making copy, it shluld be once mCurrFrame is completely modified)
         if((mCurrentFrame.mnId<(mnLastRelocFrameId+mnFramesToResetIMU)) && (mCurrentFrame.mnId > mnFramesToResetIMU) && ((mSensor == System::IMU_MONOCULAR) || (mSensor == System::IMU_STEREO)) && pCurrentMap->isImuInitialized())
         {
+            cout << "In relocalization"<<endl;
             // TODO check this situation
             Verbose::PrintMess("Saving pointer to frame. imu needs reset...", Verbose::VERBOSITY_NORMAL);
             Frame* pF = new Frame(mCurrentFrame);
@@ -2054,6 +2066,7 @@ void Tracking::Track()
 
         if(pCurrentMap->isImuInitialized())
         {
+            cout<<"In IMU initialization"<<endl;
             if(bOK)
             {
                 if(mCurrentFrame.mnId==(mnLastRelocFrameId+mnFramesToResetIMU))
@@ -2071,7 +2084,7 @@ void Tracking::Track()
         double timeLMTrack = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(time_EndLMTrack - time_StartLMTrack).count();
         vdLMTrack_ms.push_back(timeLMTrack);
 #endif
-
+        cout << "Going to update the drawer"<<endl;
         // Update drawer
         mpFrameDrawer->Update(this);
         if(!mCurrentFrame.mTcw.empty())
@@ -2079,6 +2092,7 @@ void Tracking::Track()
 
         if(bOK || mState==RECENTLY_LOST)
         {
+            cout<<"In state is recently lost"<<endl;
             // Update motion model
             if(!mLastFrame.mTcw.empty() && !mCurrentFrame.mTcw.empty())
             {
@@ -2146,6 +2160,7 @@ void Tracking::Track()
         // Reset if the camera get lost soon after initialization
         if(mState==LOST)
         {
+            cout<<"In final mstate is lost"
             if(pCurrentMap->KeyFramesInMap()<=5)
             {
                 mpSystem->ResetActiveMap();
@@ -2158,13 +2173,16 @@ void Tracking::Track()
                     mpSystem->ResetActiveMap();
                     return;
                 }
-
+                
+            cout<<"Creating map in atlas"<<endl;    
             CreateMapInAtlas();
         }
 
+        cout<< "Final if statement"<<endl;
         if(!mCurrentFrame.mpReferenceKF)
             mCurrentFrame.mpReferenceKF = mpReferenceKF;
 
+        cout<<"The code must be working at this point -- final statement"<<endl; 
         mLastFrame = Frame(mCurrentFrame);
     }
 
@@ -2174,6 +2192,7 @@ void Tracking::Track()
     if(mState==OK || mState==RECENTLY_LOST)
     {
         // Store frame pose information to retrieve the complete camera trajectory afterwards.
+        // TODO: Remove -- added for debugging
         cout<<"Did not enter both the blocks -- rather present in recently lost"<<endl;
         if(!mCurrentFrame.mTcw.empty())
         {
