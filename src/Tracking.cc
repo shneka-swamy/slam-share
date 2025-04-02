@@ -1681,7 +1681,7 @@ void Tracking::Track()
     cout<<"Calling GetCurrentMap from Track()"<<std::endl;
     //boost::interprocess::offset_ptr<Map>  pCurrentMap = mpAtlas->GetCurrentMap().get();
     //boost::interprocess::managed_shared_memory segment(boost::interprocess::open_or_create, "MySharedMemory",1073741824);
-    cout<<"Checked if new map is required. Runing a function in Shared memory"<<endl;
+    cout<<"Checked if new map is required. Running a function in Shared memory"<<endl;
     //boost::interprocess::offset_ptr<Map> pCurrentMap = segment.find_or_construct<Map>("Map1")();
 
     boost::interprocess::offset_ptr<Map> pCurrentMap = mpAtlas->GetCurrentMap();
@@ -1755,9 +1755,6 @@ void Tracking::Track()
     }
     mbCreatedMap = false;
 
-
-
-
     // Get Map Mutex -> Map cannot be changed
     unique_lock<mutex> lock(pCurrentMap->mMutexMapUpdate);
 
@@ -1772,10 +1769,13 @@ void Tracking::Track()
         mbMapUpdated = true;
     }
 
-cout<<"In tracking, current maps have called few functions"<<endl;
+    
+    cout<<"In tracking, current maps have called few functions"<<endl;
 
     if(mState==NOT_INITIALIZED)
     {
+        // TODO: Remove this later -- added to check if there is an error in this part of the code
+        cout << "Entered mState not initialized" << endl;
         if(mSensor==System::STEREO || mSensor==System::RGBD || mSensor==System::IMU_STEREO)
             StereoInitialization();
         else
@@ -1799,6 +1799,8 @@ cout<<"In tracking, current maps have called few functions"<<endl;
     else
     {
         // System is initialized. Track Frame.
+        // TODO: Remove this -- added for debugging
+        cout<<"Entered the else block before getting stuck"<<endl;
         bool bOK;
 
 #ifdef REGISTER_TIMES
@@ -2172,6 +2174,7 @@ cout<<"In tracking, current maps have called few functions"<<endl;
     if(mState==OK || mState==RECENTLY_LOST)
     {
         // Store frame pose information to retrieve the complete camera trajectory afterwards.
+        cout<<"Did not enter both the blocks -- rather present in recently lost"<<endl;
         if(!mCurrentFrame.mTcw.empty())
         {
             cv::Mat Tcr = mCurrentFrame.mTcw*mCurrentFrame.mpReferenceKF->GetPoseInverse();
