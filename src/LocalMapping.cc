@@ -1222,9 +1222,9 @@ void LocalMapping::ResetIfRequested()
             mlNewKeyFrames.clear();
             mlpRecentAddedMapPoints.clear();
             mbResetRequested=false;
-            mCondVarReset1.notify_all()
+            mCondVarReset1.notify_all();
             mbResetRequestedActiveMap = false;
-            mCondVarReset.notify_all()
+            mCondVarReset.notify_all();
 
             // Inertial parameters
             mTinit = 0.f;
