@@ -1055,18 +1055,15 @@ vector<boost::interprocess::offset_ptr<MapPoint> > KeyFrame::GetMapPointMatches(
     std::random_device rd;  
     std::mt19937 gen(rd()); 
     std::uniform_int_distribution<int> dist(10, 100); 
+    vector<boost::interprocess::offset_ptr<MapPoint> > returnvec;
+    //returnvec.assign(mvpMapPoints.get()->begin(),mvpMapPoints.get()->end());
     //return mvpMapPoints;
     
     //mvpMapPoints_vector.clear();
 
     // TODO: This can be removed later
     for(int i= 0; i < 5 ; ++i){
-        if (lock.owns_lock()){
-        
-            vector<boost::interprocess::offset_ptr<MapPoint> > returnvec;
-            //returnvec.assign(mvpMapPoints.get()->begin(),mvpMapPoints.get()->end());
-
-            
+        if (lock.owns_lock()){        
             for(size_t i=0; i<mvpMapPoints->size(); i++){
                 returnvec.push_back((*mvpMapPoints)[i]);
             }
