@@ -473,9 +473,9 @@ bool MapPoint::isBad()
 {
     // std::scoped_lock<mutex> lock1(mMutexFeatures,std::defer_lock);
     // std::scoped_lock<mutex> lock2(mMutexPos,std::defer_lock);
-    std::scoped_lock<mutex> lock1(mMutexFeatures);
-    std::scoped_lock<mutex> lock2(mMutexPos);
-    lock(lock1, lock2);
+    std::scoped_lock<mutex> lock(mMutexFeatures, mMutexPos);
+    //std::scoped_lock<mutex> lock2(mMutexPos);
+    //lock(lock1, lock2);
 
     return mbBad;
 }
