@@ -1081,7 +1081,7 @@ vector<boost::interprocess::offset_ptr<MapPoint> > KeyFrame::GetMapPointMatches(
         }
 
     }
-    std::cerr << "Error: Failed to acquire lock after retries.\n";
+    std::cout << "Error: Failed to acquire lock after retries.\n";
     return returnvec;
 
 }
