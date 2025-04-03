@@ -408,7 +408,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp, const
 
     // Check mode change
     {
-        unique_lock<mutex> lock(mMutexMode);
+        unique_lock<mutex> lock(mMutexMode, std::adopt_lock);
         if(mbActivateLocalizationMode)
         {
             mpLocalMapper->RequestStop();
@@ -432,7 +432,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp, const
 
     // Check reset
     {
-        unique_lock<mutex> lock(mMutexReset);
+        unique_lock<mutex> lock(mMutexReset, std::adopt_lock);
         if(mbReset)
         {
             mpTracker->Reset();
