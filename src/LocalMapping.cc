@@ -1169,14 +1169,13 @@ void LocalMapping::RequestReset()
     }
     cout << "LM: Map reset, waiting..." << endl;
 
-    while(1)
+    while (true)
     {
-        {
-            unique_lock<mutex> lock2(mMutexReset);
-            if(!mbResetRequested)
-                break;
-        }
-        usleep(3000);
+        unique_lock<mutex> lock2(mMutexReset);
+        if (!mbResetRequested)
+            break;
+
+        mCondVarReset.wait(lock2);  // Wait until notified
     }
     cout << "LM: Map reset, Done!!!" << endl;
 }
@@ -1191,15 +1190,22 @@ void LocalMapping::RequestResetActiveMap(boost::interprocess::offset_ptr<Map>  p
     }
     cout << "LM: Active map reset, waiting..." << endl;
 
-    while(1)
+    while(true)
     {
-        {
-            unique_lock<mutex> lock2(mMutexReset);
+        unique_lock<mutex> lock2(mMutexReset);
             if(!mbResetRequestedActiveMap)
                 break;
-        }
-        usleep(3000);
+        mCondVarReset.wait(lock2);
     }
+    // while(1)
+    // {
+    //     {
+    //         unique_lock<mutex> lock2(mMutexReset);
+    //         if(!mbResetRequestedActiveMap)
+    //             break;
+    //     }
+    //     usleep(3000);
+    // }
     cout << "LM: Active map reset, Done!!!" << endl;
 }
 
