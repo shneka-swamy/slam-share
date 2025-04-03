@@ -1173,7 +1173,7 @@ void LocalMapping::RequestReset()
 
     // Wait until mbResetRequested becomes false
     {
-        std::scoped_lock<std::mutex> lock(mMutexReset);
+        //std::scoped_lock<std::mutex> lock(mMutexReset);
         mCondVarReset1.wait(lock, [this] { return !mbResetRequested; });
     }
 
@@ -1212,7 +1212,7 @@ void LocalMapping::RequestResetActiveMap(boost::interprocess::offset_ptr<Map>  p
     cout << "LM: Active map reset, waiting..." << endl;
 
     {
-        std::scoped_lock<mutex> lock(mMutexReset);
+       // std::scoped_lock<mutex> lock(mMutexReset);
         mCondVarReset.wait(lock, [this] { return !mbResetRequestedActiveMap; });
     }
 
