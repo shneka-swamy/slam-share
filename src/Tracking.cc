@@ -3361,17 +3361,16 @@ void Tracking::UpdateLocalPoints()
 {
     mvpLocalMapPoints.clear();
 
-    // int count_pts = 0;
+    int count_pts = 0;
+    int count_debug = 0;
 
     cout<<"Called boost process"<< mvpLocalKeyFrames.size()<<endl;
-    int count_debug = 0;
     for(vector<boost::interprocess::offset_ptr<KeyFrame> >::const_reverse_iterator itKF=mvpLocalKeyFrames.rbegin(), itEndKF=mvpLocalKeyFrames.rend(); itKF!=itEndKF; ++itKF)
     {
         boost::interprocess::offset_ptr<KeyFrame>  pKF = *itKF;
         const vector<boost::interprocess::offset_ptr<MapPoint> > vpMPs = pKF->GetMapPointMatches();
 
-        // count_debug ++;
-        // int count_debug2 = 0;
+        int count_debug2 = 0;
         cout<<"Number of times to run the for loop is: " << vpMPs.size()<<endl;
         for(vector<boost::interprocess::offset_ptr<MapPoint> >::const_iterator itMP=vpMPs.begin(), itEndMP=vpMPs.end(); itMP!=itEndMP; itMP++)
         {
@@ -3387,12 +3386,12 @@ void Tracking::UpdateLocalPoints()
                 pMP->mnTrackReferenceForFrame=mCurrentFrame.mnId;
             }
 
-            // if (count_debug2 > 5){
-            //     break;
-            // }
+            if (count_debug2 > 5){
+                break;
+            }
     
         }
-        if(count_debug >= 80){
+        if(count_debug >= 5){
             break;
         } 
 
