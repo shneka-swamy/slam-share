@@ -1575,8 +1575,8 @@ float KeyFrame::ComputeSceneMedianDepth(const int q)
     vector<boost::interprocess::offset_ptr<MapPoint> > vpMapPoints;
     cv::Mat Tcw_;
     {
-        unique_lock<mutex> lock(mMutexFeatures);
-        unique_lock<mutex> lock2(mMutexPose);
+        unique_lock<mutex> lock(mMutexFeatures,std::adopt_lock);
+        unique_lock<mutex> lock2(mMutexPose,std::adopt_lock);
         vpMapPoints.assign(mvpMapPoints.get()->begin(),mvpMapPoints.get()->end());// = mvpMapPoints;
         /*
         mvpMapPoints_vector.clear();

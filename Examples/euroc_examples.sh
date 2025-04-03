@@ -102,17 +102,17 @@ pathDatasetEuroc='../../CollabAR/EuRoC/' #Example, it is necesary to change it b
 #echo "Launching MH03 with Monocular-Inertial sensor"
 #../build/debug/bin/mono_inertial_euroc ../Vocabulary/ORBvoc.txt ./Monocular-Inertial/EuRoC.yaml "$pathDatasetEuroc"/machine_hall/MH_03 ./Monocular-Inertial/EuRoC_TimeStamps/MH03.txt dataset-MH03_monoi
 
-# echo "Launching MH04 with Monocular-Inertial sensor"
-# ../build/debug/bin/mono_inertial_euroc ../Vocabulary/ORBvoc.txt ./Monocular-Inertial/EuRoC.yaml "$pathDatasetEuroc"/machine_hall/MH_04 ./Monocular-Inertial/EuRoC_TimeStamps/MH04.txt dataset-MH04_monoi
+#echo "Launching MH04 with Monocular-Inertial sensor"
+#../build/debug/bin/mono_inertial_euroc ../Vocabulary/ORBvoc.txt ./Monocular-Inertial/EuRoC.yaml "$pathDatasetEuroc"/machine_hall/MH_04 ./Monocular-Inertial/EuRoC_TimeStamps/MH04.txt dataset-MH04_monoi
 
 # echo "Launching MH05 with Monocular-Inertial sensor"
 # ../build/debug/bin/mono_inertial_euroc ../Vocabulary/ORBvoc.txt ./Monocular-Inertial/EuRoC.yaml "$pathDatasetEuroc"/machine_hall/MH_05 ./Monocular-Inertial/EuRoC_TimeStamps/MH05.txt dataset-MH05_monoi
 
-# echo "Launching V101 with Monocular-Inertial sensor"
-# ../build/debug/bin/mono_inertial_euroc ../Vocabulary/ORBvoc.txt ./Monocular-Inertial/EuRoC.yaml "$pathDatasetEuroc"/vicon/V1_01 ./Monocular-Inertial/EuRoC_TimeStamps/V101.txt dataset-V101_monoi
+echo "Launching V101 with Monocular-Inertial sensor"
+../build/debug/bin/mono_inertial_euroc ../Vocabulary/ORBvoc.txt ./Monocular-Inertial/EuRoC.yaml "$pathDatasetEuroc"/vicon/V1_01 ./Monocular-Inertial/EuRoC_TimeStamps/V101.txt dataset-V101_monoi
 
-echo "Launching V102 with Monocular-Inertial sensor"
-../build/debug/bin/mono_inertial_euroc ../Vocabulary/ORBvoc.txt ./Monocular-Inertial/EuRoC.yaml "$pathDatasetEuroc"/vicon/V1_02 ./Monocular-Inertial/EuRoC_TimeStamps/V102.txt dataset-V102_monoi
+#echo "Launching V102 with Monocular-Inertial sensor"
+#../build/debug/bin/mono_inertial_euroc ../Vocabulary/ORBvoc.txt ./Monocular-Inertial/EuRoC.yaml "$pathDatasetEuroc"/vicon/V1_02 ./Monocular-Inertial/EuRoC_TimeStamps/V102.txt dataset-V102_monoi
 
 # echo "Launching V103 with Monocular-Inertial sensor"
 # ../build/debug/bin/mono_inertial_euroc ../Vocabulary/ORBvoc.txt ./Monocular-Inertial/EuRoC.yaml "$pathDatasetEuroc"/vicon/V1_03 ./Monocular-Inertial/EuRoC_TimeStamps/V103.txt dataset-V103_monoi
