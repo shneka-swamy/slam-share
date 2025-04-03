@@ -178,7 +178,7 @@ void LocalMapping::Run()
                 }
 
 #endif
-
+                std::cout<<"Going to initialize IMU"<<endl;
                 // Initialize IMU here
                 if(!mpCurrentKeyFrame->GetMap()->isImuInitialized() && mbInertial)
                 {
@@ -191,7 +191,7 @@ void LocalMapping::Run()
 
                 // Check redundant local Keyframes
                 KeyFrameCulling();
-
+                std::cout<<"In Key Frame Culling"<<endl;
 #ifdef REGISTER_TIMES
                 std::chrono::steady_clock::time_point time_EndKFCulling = std::chrono::steady_clock::now();
 
@@ -245,7 +245,7 @@ void LocalMapping::Run()
                     }
                 }
             }
-
+            std::cout<<"Before the cullin is called"<<std::endl;
 #ifdef REGISTER_TIMES
             vdLBA_ms.push_back(timeLBA_ms);
             vdKFCulling_ms.push_back(timeKFCulling_ms);
@@ -253,7 +253,7 @@ void LocalMapping::Run()
 
 
             mpLoopCloser->InsertKeyFrame(mpCurrentKeyFrame);
-
+            std::cout<<"Called the loop closure frame"<<endl;
 
 #ifdef REGISTER_TIMES
             std::chrono::steady_clock::time_point time_EndLocalMap = std::chrono::steady_clock::now();
@@ -263,7 +263,8 @@ void LocalMapping::Run()
 #endif
         }
         else if(Stop() && !mbBadImu)
-        {
+        {   
+            std::cout<<"Stopping because of bad imu value"<<std::endl;
             // Safe area to stop
             while(isStopped() && !CheckFinish())
             {
@@ -273,6 +274,7 @@ void LocalMapping::Run()
                 break;
         }
 
+        std::cout<<"Calling the reset function"<<endl;
         ResetIfRequested();
 
         // Tracking will see that Local Mapping is busy
