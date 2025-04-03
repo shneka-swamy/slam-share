@@ -190,8 +190,6 @@ protected:
     int mNumKFCulling;
 
     float mTinit;
-    std::condition_variable mCondVarReset;
-    std::condition_variable mCondVarReset1;
 
     int countRefinement;
 
