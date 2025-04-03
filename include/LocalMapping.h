@@ -28,6 +28,7 @@
 #include "Initializer.h"
 
 #include <mutex>
+#include <condition_variable>
 
 
 namespace ORB_SLAM3
@@ -189,6 +190,7 @@ protected:
     int mNumKFCulling;
 
     float mTinit;
+    std::condition_variable mCondVarReset;
 
     int countRefinement;
 
