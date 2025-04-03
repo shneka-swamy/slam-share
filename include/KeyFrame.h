@@ -33,10 +33,6 @@
 #include "GeometricCamera.h"
 
 #include <mutex>
-#include <chrono>
-#include <random>
-#include <iostream>
-#include <thread>
 
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/vector.hpp>

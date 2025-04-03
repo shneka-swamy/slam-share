@@ -1051,24 +1051,20 @@ int KeyFrame::TrackedMapPoints(const int &minObs)
 
 vector<boost::interprocess::offset_ptr<MapPoint> > KeyFrame::GetMapPointMatches()
 {
-    unique_lock<mutex> lock(mMutexFeatures);
+    unique_lock<mutex> lock(mMutexFeatures, std::adopt_lock);
     std::random_device rd;  
     std::mt19937 gen(rd()); 
     std::uniform_int_distribution<int> dist(9000, 10000); 
     vector<boost::interprocess::offset_ptr<MapPoint> > returnvec;
-    bool flag = false;
     //returnvec.assign(mvpMapPoints.get()->begin(),mvpMapPoints.get()->end());
     //return mvpMapPoints;
     
     //mvpMapPoints_vector.clear();
 
     // TODO: This can be removed later
-    for(int j= 0; j < 40 ; ++j){
-        if (lock.owns_lock()){      
-            //std::cout<<"Acquired lock"<<std::endl;  
-            flag = true;
-            vector<boost::interprocess::offset_ptr<MapPoint> > tempVec(mvpMapPoints->begin(), mvpMapPoints->end());
-            returnvec.insert(returnvec.end(), tempVec.begin(), tempVec.end());
+    
+    vector<boost::interprocess::offset_ptr<MapPoint> > tempVec(mvpMapPoints->begin(), mvpMapPoints->end());
+    returnvec.insert(returnvec.end(), tempVec.begin(), tempVec.end());
             // for(size_t i=0; i<mvpMapPoints->size(); i++){
             //     returnvec.push_back((*mvpMapPoints)[i]);
             // }
@@ -1076,17 +1072,6 @@ vector<boost::interprocess::offset_ptr<MapPoint> > KeyFrame::GetMapPointMatches(
             //mvpMapPoints_vector.assign(mvpMapPoints.get()->begin(),mvpMapPoints.get()->end());
             //return (*(mvpMapPoints.get()));
             //return mvpMapPoints_vector;
-        }
-        else{
-            int backofftime = dist(gen);
-            std::cout<< "Failed to acquire lock. Retrying" << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(backofftime));
-        }
-
-    }
-    if (!flag){
-        throw std::runtime_error("Could not get lock");
-    }
     return returnvec;
 
 }
