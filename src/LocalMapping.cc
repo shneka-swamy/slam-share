@@ -140,7 +140,7 @@ void LocalMapping::Run()
                             if((mTinit<10.f) && (dist<0.02))
                             {
                                 cout << "Not enough motion for initializing. Reseting..." << endl;
-                                unique_lock<mutex> lock(mMutexReset,std::adopt_lock);
+                                unique_lock<mutex> lock(mMutexReset);
                                 mbResetRequestedActiveMap = true;
                                 mpMapToReset = mpCurrentKeyFrame->GetMap();
                                 mbBadImu = true;
@@ -1163,33 +1163,56 @@ cv::Matx33f LocalMapping::SkewSymmetricMatrix_(const cv::Matx31f &v)
 void LocalMapping::RequestReset()
 {
     {
-        unique_lock<mutex> lock(mMutexReset, std::adopt_lock);
-        cout << "LM: Map reset recieved" << endl;
+        std::unique_lock<std::mutex> lock(mMutexReset);
+        std::cout << "LM: Map reset received" << std::endl;
         mbResetRequested = true;
     }
-    cout << "LM: Map reset, waiting..." << endl;
+    std::cout << "LM: Map reset, waiting..." << std::endl;
 
-    while(1)
+    // Wait until mbResetRequested becomes false
     {
-        {
-            unique_lock<mutex> lock2(mMutexReset, std::adopt_lock);
-            if(!mbResetRequested)
-                break;
-        }
-        usleep(3000);
+        std::unique_lock<std::mutex> lock(mMutexReset);
+        mCondVarReset1.wait(lock, [this] { return !mbResetRequested; });
     }
-    cout << "LM: Map reset, Done!!!" << endl;
+
+    std::cout << "LM: Map reset, Done!!!" << std::endl;
 }
+
+// void LocalMapping::RequestReset()
+// {
+//     {
+//         unique_lock<mutex> lock(mMutexReset);
+//         cout << "LM: Map reset recieved" << endl;
+//         mbResetRequested = true;
+//     }
+//     cout << "LM: Map reset, waiting..." << endl;
+
+//     while(1)
+//     {
+//         {
+//             unique_lock<mutex> lock2(mMutexReset);
+//             if(!mbResetRequested)
+//                 break;
+//         }
+//         usleep(3000);
+//     }
+//     cout << "LM: Map reset, Done!!!" << endl;
+// }
 
 void LocalMapping::RequestResetActiveMap(boost::interprocess::offset_ptr<Map>  pMap)
 {
     {
-        unique_lock<mutex> lock(mMutexReset, std::adopt_lock);
+        unique_lock<mutex> lock(mMutexReset);
         cout << "LM: Active map reset recieved" << endl;
         mbResetRequestedActiveMap = true;
         mpMapToReset = pMap;
     }
     cout << "LM: Active map reset, waiting..." << endl;
+
+    {
+        unique_lock<mutex> lock(mMutexReset);
+        mCondVarReset.wait(lock, [this] { return !mbResetRequestedActiveMap; });
+    }
 
     // while(true)
     // {
@@ -1198,15 +1221,15 @@ void LocalMapping::RequestResetActiveMap(boost::interprocess::offset_ptr<Map>  p
     //             break;
     //     mCondVarReset.wait(lock2);
     // }
-    while(1)
-    {
-        {
-            unique_lock<mutex> lock2(mMutexReset, std::adopt_lock);
-            if(!mbResetRequestedActiveMap)
-                break;
-        }
-        usleep(3000);
-    }
+    // while(1)
+    // {
+    //     {
+    //         unique_lock<mutex> lock2(mMutexReset, std::adopt_lock);
+    //         if(!mbResetRequestedActiveMap)
+    //             break;
+    //     }
+    //     usleep(3000);
+    // }
     cout << "LM: Active map reset, Done!!!" << endl;
 }
 
@@ -1214,7 +1237,7 @@ void LocalMapping::ResetIfRequested()
 {
     bool executed_reset = false;
     {
-        unique_lock<mutex> lock(mMutexReset, std::adopt_lock);
+        unique_lock<mutex> lock(mMutexReset);
         if(mbResetRequested)
         {
             executed_reset = true;
@@ -1223,7 +1246,9 @@ void LocalMapping::ResetIfRequested()
             mlNewKeyFrames.clear();
             mlpRecentAddedMapPoints.clear();
             mbResetRequested=false;
+            mCondVarReset1.notify_all();
             mbResetRequestedActiveMap = false;
+            mCondVarReset.notify_all();
 
             // Inertial parameters
             mTinit = 0.f;
@@ -1249,6 +1274,7 @@ void LocalMapping::ResetIfRequested()
             mbBadImu=false;
 
             mbResetRequestedActiveMap = false;
+            mCondVarReset.notify_all();
             cout << "LM: End reseting Local Mapping..." << endl;
         }
     }

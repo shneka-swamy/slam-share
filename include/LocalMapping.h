@@ -195,6 +195,8 @@ protected:
 
     //DEBUG
     ofstream f_lm;
+    std::condition_variable mCondVarReset;
+    std::condition_variable mCondVarReset1;
 };
 
 } //namespace ORB_SLAM
