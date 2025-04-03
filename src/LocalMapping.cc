@@ -1175,7 +1175,7 @@ void LocalMapping::RequestReset()
         if (!mbResetRequested)
             break;
 
-        mCondVarReset.wait(lock2);  // Wait until notified
+        mCondVarReset1.wait(lock2);  // Wait until notified
     }
     cout << "LM: Map reset, Done!!!" << endl;
 }
@@ -1222,7 +1222,9 @@ void LocalMapping::ResetIfRequested()
             mlNewKeyFrames.clear();
             mlpRecentAddedMapPoints.clear();
             mbResetRequested=false;
+            mCondVarReset1.notify_all()
             mbResetRequestedActiveMap = false;
+            mCondVarReset.notify_all()
 
             // Inertial parameters
             mTinit = 0.f;
@@ -1248,6 +1250,7 @@ void LocalMapping::ResetIfRequested()
             mbBadImu=false;
 
             mbResetRequestedActiveMap = false;
+            mCondVarReset.notify_all()
             cout << "LM: End reseting Local Mapping..." << endl;
         }
     }
