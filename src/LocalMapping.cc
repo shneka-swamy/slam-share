@@ -1250,7 +1250,7 @@ void LocalMapping::ResetIfRequested()
             mbBadImu=false;
 
             mbResetRequestedActiveMap = false;
-            mCondVarReset.notify_all()
+            mCondVarReset.notify_all();
             cout << "LM: End reseting Local Mapping..." << endl;
         }
     }
