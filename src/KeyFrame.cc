@@ -1064,7 +1064,6 @@ vector<boost::interprocess::offset_ptr<MapPoint> > KeyFrame::GetMapPointMatches(
     // TODO: This can be removed later
     for(int j= 0; j < 5 ; ++j){
         if (lock.owns_lock()){        
-            cout<<"Lock is owned" <<endl;
             for(size_t i=0; i<mvpMapPoints->size(); i++){
                 returnvec.push_back((*mvpMapPoints)[i]);
             }
