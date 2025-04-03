@@ -1085,7 +1085,7 @@ vector<boost::interprocess::offset_ptr<MapPoint> > KeyFrame::GetMapPointMatches(
 
     }
     if (!flag){
-        std::cout << "Error: Failed to acquire lock after retries.\n";
+        throw std::runtime_error("Could not get lock");
     }
     return returnvec;
 
