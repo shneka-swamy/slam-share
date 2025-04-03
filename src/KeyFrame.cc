@@ -1060,7 +1060,7 @@ vector<boost::interprocess::offset_ptr<MapPoint> > KeyFrame::GetMapPointMatches(
     //mvpMapPoints_vector.clear();
 
     // TODO: This can be removed later
-    for(int i= 0; i < 5 ; ++5){
+    for(int i= 0; i < 5 ; ++i){
         if (lock.owns_lock()){
         
             vector<boost::interprocess::offset_ptr<MapPoint> > returnvec;
