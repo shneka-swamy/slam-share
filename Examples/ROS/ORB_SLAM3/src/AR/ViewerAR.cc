@@ -235,7 +235,7 @@ void ViewerAR::Run()
 
 void ViewerAR::SetImagePose(const cv::Mat &im, const cv::Mat &Tcw, const int &status, const vector<cv::KeyPoint> &vKeys, const vector<ORB_SLAM3::MapPoint*> &vMPs)
 {
-    unique_lock<mutex> lock(mMutexPoseImage);
+    std::scoped_lock<mutex> lock(mMutexPoseImage);
     mImage = im.clone();
     mTcw = Tcw.clone();
     mStatus = status;
@@ -245,7 +245,7 @@ void ViewerAR::SetImagePose(const cv::Mat &im, const cv::Mat &Tcw, const int &st
 
 void ViewerAR::GetImagePose(cv::Mat &im, cv::Mat &Tcw, int &status, std::vector<cv::KeyPoint> &vKeys,  std::vector<MapPoint*> &vMPs)
 {
-    unique_lock<mutex> lock(mMutexPoseImage);
+    std::scoped_lock<mutex> lock(mMutexPoseImage);
     im = mImage.clone();
     Tcw = mTcw.clone();
     status = mStatus;

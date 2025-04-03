@@ -285,7 +285,7 @@ void LoopClosing::Run()
 
 void LoopClosing::InsertKeyFrame(boost::interprocess::offset_ptr<KeyFrame> pKF)
 {
-    unique_lock<mutex> lock(mMutexLoopQueue);
+    std::scoped_lock<mutex> lock(mMutexLoopQueue);
     //std::cout<<"mMutexLoop queue passed\n";
     if(pKF->mnId!=0)
         mlpLoopKeyFrameQueue.push_back(pKF);
@@ -295,7 +295,7 @@ void LoopClosing::InsertKeyFrame(boost::interprocess::offset_ptr<KeyFrame> pKF)
 
 bool LoopClosing::CheckNewKeyFrames()
 {
-    unique_lock<mutex> lock(mMutexLoopQueue);
+    std::scoped_lock<mutex> lock(mMutexLoopQueue);
     return(!mlpLoopKeyFrameQueue.empty());
 }
 
@@ -303,7 +303,7 @@ bool LoopClosing::NewDetectCommonRegions()
 {
     //std::cout<<"New detect common regions 1.\n";
     {
-        unique_lock<mutex> lock(mMutexLoopQueue);
+        std::scoped_lock<mutex> lock(mMutexLoopQueue);
         mpCurrentKF = mlpLoopKeyFrameQueue.front();
         mlpLoopKeyFrameQueue.pop_front();
         // Avoid that a keyframe can be erased while it is being process by this thread
@@ -895,7 +895,7 @@ void LoopClosing::CorrectLoop()
     cout << "Request GBA abort" << endl;
     if(isRunningGBA())
     {
-        unique_lock<mutex> lock(mMutexGBA);
+        std::scoped_lock<mutex> lock(mMutexGBA);
         mbStopGBA = true;
 
         mnFullBAIdx = !mnFullBAIdx;
@@ -931,7 +931,7 @@ void LoopClosing::CorrectLoop()
 
     {
         // Get Map Mutex
-        unique_lock<mutex> lock(pLoopMap->mMutexMapUpdate);
+        std::scoped_lock<mutex> lock(pLoopMap->mMutexMapUpdate);
 
         const bool bImuInit = pLoopMap->isImuInitialized();
 
@@ -1126,7 +1126,7 @@ void LoopClosing::MergeLocal()
     // If a Global Bundle Adjustment is running, abort it
     if(isRunningGBA())
     {
-        unique_lock<mutex> lock(mMutexGBA);
+        std::scoped_lock<mutex> lock(mMutexGBA);
         mbStopGBA = true;
 
         mnFullBAIdx = !mnFullBAIdx;
@@ -1384,8 +1384,8 @@ void LoopClosing::MergeLocal()
 
      std::cout<<"Merge local 6\n";
     {
-        unique_lock<mutex> currentLock(pCurrentMap->mMutexMapUpdate); // We update the current map with the Merge information
-        unique_lock<mutex> mergeLock(pMergeMap->mMutexMapUpdate); // We remove the Kfs and MPs in the merged area from the old map
+        std::scoped_lock<mutex> currentLock(pCurrentMap->mMutexMapUpdate); // We update the current map with the Merge information
+        std::scoped_lock<mutex> mergeLock(pMergeMap->mMutexMapUpdate); // We remove the Kfs and MPs in the merged area from the old map
 
         for(boost::interprocess::offset_ptr<KeyFrame>  pKFi : spLocalWindowKFs)
         {
@@ -1517,7 +1517,7 @@ void LoopClosing::MergeLocal()
         {
             if(mpTracker->mSensor == System::MONOCULAR)
             {
-                unique_lock<mutex> currentLock(pCurrentMap->mMutexMapUpdate); // We update the current map with the Merge information
+                std::scoped_lock<mutex> currentLock(pCurrentMap->mMutexMapUpdate); // We update the current map with the Merge information
 
                 for(boost::interprocess::offset_ptr<KeyFrame>  pKFi : vpCurrentMapKFs)
                 {
@@ -1606,8 +1606,8 @@ void LoopClosing::MergeLocal()
 
         {
             // Get Merge Map Mutex
-            unique_lock<mutex> currentLock(pCurrentMap->mMutexMapUpdate); // We update the current map with the Merge information
-            unique_lock<mutex> mergeLock(pMergeMap->mMutexMapUpdate); // We remove the Kfs and MPs in the merged area from the old map
+            std::scoped_lock<mutex> currentLock(pCurrentMap->mMutexMapUpdate); // We update the current map with the Merge information
+            std::scoped_lock<mutex> mergeLock(pMergeMap->mMutexMapUpdate); // We remove the Kfs and MPs in the merged area from the old map
 
             for(boost::interprocess::offset_ptr<KeyFrame>  pKFi : vpCurrentMapKFs)
             {
@@ -1682,7 +1682,7 @@ void LoopClosing::MergeLocal2()
     // If a Global Bundle Adjustment is running, abort it
     if(isRunningGBA())
     {
-        unique_lock<mutex> lock(mMutexGBA);
+        std::scoped_lock<mutex> lock(mMutexGBA);
         mbStopGBA = true;
 
         mnFullBAIdx = !mnFullBAIdx;
@@ -1714,7 +1714,7 @@ void LoopClosing::MergeLocal2()
         cv::Mat R_on = Converter::toCvMat(mSold_new.rotation().toRotationMatrix());
         cv::Mat t_on = Converter::toCvMat(mSold_new.translation());
 
-        unique_lock<mutex> lock(mpAtlas->GetCurrentMap()->mMutexMapUpdate);
+        std::scoped_lock<mutex> lock(mpAtlas->GetCurrentMap()->mMutexMapUpdate);
 
         mpLocalMapper->EmptyQueue();
 
@@ -1737,7 +1737,7 @@ void LoopClosing::MergeLocal2()
         ba << 0., 0., 0.;
         Optimizer::InertialOptimization(pCurrentMap,bg,ba);
         IMU::Bias b (ba[0],ba[1],ba[2],bg[0],bg[1],bg[2]);
-        unique_lock<mutex> lock(mpAtlas->GetCurrentMap()->mMutexMapUpdate);
+        std::scoped_lock<mutex> lock(mpAtlas->GetCurrentMap()->mMutexMapUpdate);
         mpTracker->UpdateFrameIMU(1.0f,b,mpTracker->GetLastKeyFrame());
 
         // Set map initialized
@@ -1750,8 +1750,8 @@ void LoopClosing::MergeLocal2()
     // Load KFs and MPs from merge map
     {
         // Get Merge Map Mutex (This section stops tracking!!)
-        unique_lock<mutex> currentLock(pCurrentMap->mMutexMapUpdate); // We update the current map with the Merge information
-        unique_lock<mutex> mergeLock(pMergeMap->mMutexMapUpdate); // We remove the Kfs and MPs in the merged area from the old map
+        std::scoped_lock<mutex> currentLock(pCurrentMap->mMutexMapUpdate); // We update the current map with the Merge information
+        std::scoped_lock<mutex> mergeLock(pMergeMap->mMutexMapUpdate); // We remove the Kfs and MPs in the merged area from the old map
 
 
         vector<boost::interprocess::offset_ptr<KeyFrame> > vpMergeMapKFs = pMergeMap->GetAllKeyFrames();
@@ -1888,7 +1888,7 @@ void LoopClosing::SearchAndFuse(const KeyFrameAndPose &CorrectedPosesMap, vector
         int numFused = matcher.Fuse(pKFi,cvScw,vpMapPoints,4,vpReplacePoints);
 
         // Get Map Mutex
-        unique_lock<mutex> lock(pMap->mMutexMapUpdate);
+        std::scoped_lock<mutex> lock(pMap->mMutexMapUpdate);
         const int nLP = vpMapPoints.size();
         for(int i=0; i<nLP;i++)
         {
@@ -1925,7 +1925,7 @@ void LoopClosing::SearchAndFuse(const vector<boost::interprocess::offset_ptr<Key
         matcher.Fuse(pKF,cvScw,vpMapPoints,4,vpReplacePoints);
 
         // Get Map Mutex
-        unique_lock<mutex> lock(pMap->mMutexMapUpdate);
+        std::scoped_lock<mutex> lock(pMap->mMutexMapUpdate);
         const int nLP = vpMapPoints.size();
         for(int i=0; i<nLP;i++)
         {
@@ -1945,14 +1945,14 @@ void LoopClosing::SearchAndFuse(const vector<boost::interprocess::offset_ptr<Key
 void LoopClosing::RequestReset()
 {
     {
-        unique_lock<mutex> lock(mMutexReset);
+        std::scoped_lock<mutex> lock(mMutexReset);
         mbResetRequested = true;
     }
 
     while(1)
     {
         {
-        unique_lock<mutex> lock2(mMutexReset);
+        std::scoped_lock<mutex> lock2(mMutexReset);
         if(!mbResetRequested)
             break;
         }
@@ -1963,7 +1963,7 @@ void LoopClosing::RequestReset()
 void LoopClosing::RequestResetActiveMap(boost::interprocess::offset_ptr<Map> pMap)
 {
     {
-        unique_lock<mutex> lock(mMutexReset);
+        std::scoped_lock<mutex> lock(mMutexReset);
         mbResetActiveMapRequested = true;
         mpMapToReset = pMap;
     }
@@ -1971,7 +1971,7 @@ void LoopClosing::RequestResetActiveMap(boost::interprocess::offset_ptr<Map> pMa
     while(1)
     {
         {
-            unique_lock<mutex> lock2(mMutexReset);
+            std::scoped_lock<mutex> lock2(mMutexReset);
             if(!mbResetActiveMapRequested)
                 break;
         }
@@ -1981,7 +1981,7 @@ void LoopClosing::RequestResetActiveMap(boost::interprocess::offset_ptr<Map> pMa
 
 void LoopClosing::ResetIfRequested()
 {
-    unique_lock<mutex> lock(mMutexReset);
+    std::scoped_lock<mutex> lock(mMutexReset);
     if(mbResetRequested)
     {
         cout << "Loop closer reset requested..." << endl;
@@ -2040,7 +2040,7 @@ void LoopClosing::RunGlobalBundleAdjustment(boost::interprocess::offset_ptr<Map>
     // not included in the Global BA and they are not consistent with the updated map.
     // We need to propagate the correction through the spanning tree
     {
-        unique_lock<mutex> lock(mMutexGBA);
+        std::scoped_lock<mutex> lock(mMutexGBA);
         if(idx!=mnFullBAIdx)
             return;
 
@@ -2061,7 +2061,7 @@ void LoopClosing::RunGlobalBundleAdjustment(boost::interprocess::offset_ptr<Map>
             }
 
             // Get Map Mutex
-            unique_lock<mutex> lock(pActiveMap->mMutexMapUpdate);
+            std::scoped_lock<mutex> lock(pActiveMap->mMutexMapUpdate);
 
             // Correct keyframes starting at map first keyframe
             //old
@@ -2190,25 +2190,25 @@ void LoopClosing::RunGlobalBundleAdjustment(boost::interprocess::offset_ptr<Map>
 
 void LoopClosing::RequestFinish()
 {
-    unique_lock<mutex> lock(mMutexFinish);
+    std::scoped_lock<mutex> lock(mMutexFinish);
     mbFinishRequested = true;
 }
 
 bool LoopClosing::CheckFinish()
 {
-    unique_lock<mutex> lock(mMutexFinish);
+    std::scoped_lock<mutex> lock(mMutexFinish);
     return mbFinishRequested;
 }
 
 void LoopClosing::SetFinish()
 {
-    unique_lock<mutex> lock(mMutexFinish);
+    std::scoped_lock<mutex> lock(mMutexFinish);
     mbFinished = true;
 }
 
 bool LoopClosing::isFinished()
 {
-    unique_lock<mutex> lock(mMutexFinish);
+    std::scoped_lock<mutex> lock(mMutexFinish);
     return mbFinished;
 }
 

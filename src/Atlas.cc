@@ -77,7 +77,7 @@ void Atlas::CreateNewMap()
     //Atlas *mpAtlas = (*segment).find<Atlas>("Atlas")().first;
     
     cout<<"In create New Map()"<<endl;
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     
     
     //cout << "Creation of new map with id: " << Map::nNextId << endl;
@@ -164,7 +164,7 @@ void Atlas::AddMap(boost::interprocess::offset_ptr<Map>  pMap)
 
 void Atlas::ChangeMap(boost::interprocess::offset_ptr<Map>  pMap)
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     cout << "Change to map with id: " << pMap->GetId() << endl;
     if(mpCurrentMap){
         mpCurrentMap->SetStoredMap();
@@ -176,7 +176,7 @@ void Atlas::ChangeMap(boost::interprocess::offset_ptr<Map>  pMap)
 
 unsigned long int Atlas::GetLastInitKFid()
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     return mnLastInitKFidMap;
 }
 
@@ -238,55 +238,55 @@ void Atlas::AddCamera(GeometricCamera* pCam)
 
 void Atlas::SetReferenceMapPoints(const std::vector<boost::interprocess::offset_ptr<MapPoint> > &vpMPs)
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     mpCurrentMap->SetReferenceMapPoints(vpMPs);
 }
 
 void Atlas::InformNewBigChange()
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     mpCurrentMap->InformNewBigChange();
 }
 
 int Atlas::GetLastBigChangeIdx()
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     return mpCurrentMap->GetLastBigChangeIdx();
 }
 
 long unsigned int Atlas::MapPointsInMap()
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     return mpCurrentMap->MapPointsInMap();
 }
 
 long unsigned Atlas::KeyFramesInMap()
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     return mpCurrentMap->KeyFramesInMap();
 }
 
 std::vector<boost::interprocess::offset_ptr<KeyFrame> > Atlas::GetAllKeyFrames()
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     return mpCurrentMap->GetAllKeyFrames();
 }
 
 std::vector<boost::interprocess::offset_ptr<MapPoint> > Atlas::GetAllMapPoints()
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     return mpCurrentMap->GetAllMapPoints();
 }
 
 std::vector<boost::interprocess::offset_ptr<MapPoint> > Atlas::GetReferenceMapPoints()
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     return mpCurrentMap->GetReferenceMapPoints();
 }
 
 vector<boost::interprocess::offset_ptr<Map> > Atlas::GetAllMaps()
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     struct compFunctor
     {
         inline bool operator()(boost::interprocess::offset_ptr<Map>  elem1 ,boost::interprocess::offset_ptr<Map>  elem2)
@@ -301,19 +301,19 @@ vector<boost::interprocess::offset_ptr<Map> > Atlas::GetAllMaps()
 
 int Atlas::CountMaps()
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     return mspMaps.size();
 }
 
 void Atlas::clearMap()
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     mpCurrentMap->clear();
 }
 
 void Atlas::clearAtlas()
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     /*for(std::set<boost::interprocess::offset_ptr<Map> >::iterator it=mspMaps.begin(), send=mspMaps.end(); it!=send; it++)
     {
         (*it)->clear();
@@ -332,7 +332,7 @@ boost::interprocess::offset_ptr<Map>  Atlas::GetCurrentMap()
     //boost::interprocess::managed_shared_memory segment(boost::interprocess::open_or_create, "MySharedMemory",10737418240);
     //Atlas *atl = segment->find_or_construct<Atlas>("Atlas")();
 
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     
     if(!mpCurrentMap)
         CreateNewMap();
@@ -411,19 +411,19 @@ void Atlas::RemoveBadMaps()
 
 bool Atlas::isInertial()
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     return mpCurrentMap->IsInertial();
 }
 
 void Atlas::SetInertialSensor()
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     mpCurrentMap->SetInertialSensor();
 }
 
 void Atlas::SetImuInitialized()
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     mpCurrentMap->SetImuInitialized();
 }
 
@@ -433,7 +433,7 @@ bool Atlas::isImuInitialized()
     //Atlas *atl = segment->find_or_construct<Atlas>("Atlas")();
 
     //cout<<"Address of mpCurrentMap "<<mpCurrentMap<<endl;
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     return mpCurrentMap->isImuInitialized();
 }
 
@@ -465,7 +465,7 @@ ORBVocabulary* Atlas::GetORBVocabulary()
 
 long unsigned int Atlas::GetNumLivedKF()
 {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     long unsigned int num = 0;
     for(boost::interprocess::offset_ptr<Map>  mMAPi : mspMaps)
     {
@@ -476,7 +476,7 @@ long unsigned int Atlas::GetNumLivedKF()
 }
 
 long unsigned int Atlas::GetNumLivedMP() {
-    unique_lock<mutex> lock(mMutexAtlas);
+    std::scoped_lock<mutex> lock(mMutexAtlas);
     long unsigned int num = 0;
     for (boost::interprocess::offset_ptr<Map> mMAPi : mspMaps) {
         num += mMAPi->GetAllMapPoints().size();

@@ -1008,13 +1008,13 @@ cv::Mat Frame::UnprojectStereo(const int &i)
 
 bool Frame::imuIsPreintegrated()
 {
-    unique_lock<std::mutex> lock(*mpMutexImu);
+    std::scoped_lock<std::mutex> lock(*mpMutexImu);
     return mbImuPreintegrated;
 }
 
 void Frame::setIntegrated()
 {
-    unique_lock<std::mutex> lock(*mpMutexImu);
+    std::scoped_lock<std::mutex> lock(*mpMutexImu);
     mbImuPreintegrated = true;
 }
 

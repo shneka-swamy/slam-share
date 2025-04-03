@@ -71,11 +71,11 @@ public:
     void RunGlobalBundleAdjustment(boost::interprocess::offset_ptr<Map>  pActiveMap, unsigned long nLoopKF);
 
     bool isRunningGBA(){
-        unique_lock<std::mutex> lock(mMutexGBA);
+        std::scoped_lock<std::mutex> lock(mMutexGBA);
         return mbRunningGBA;
     }
     bool isFinishedGBA(){
-        unique_lock<std::mutex> lock(mMutexGBA);
+        std::scoped_lock<std::mutex> lock(mMutexGBA);
         return mbFinishedGBA;
     }   
 

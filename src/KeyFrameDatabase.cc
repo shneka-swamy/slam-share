@@ -63,7 +63,7 @@ void KeyFrameDatabase::add(boost::interprocess::offset_ptr<KeyFrame> pKF)
 
     
     std::cout<<"KeyFrameDatabase::add entry"<<newBow.size()<<std::endl;
-    //unique_lock<mutex> lock(mMutex);
+    //std::scoped_lock<mutex> lock(mMutex);
     //std::cout<<"KeyFrameDatabase::after lock. mBowVec Size: "<<pKF->mBowVec.size()<<" mvInvertedFile size: "<<mvInvertedFile.size()<<std::endl;
     */
     int counter = 0;
@@ -92,7 +92,7 @@ void KeyFrameDatabase::erase(boost::interprocess::offset_ptr<KeyFrame>  pKF)
     //return;
 
     //remove
-    //unique_lock<mutex> lock(mMutex);
+    //std::scoped_lock<mutex> lock(mMutex);
     std::cout<<"KeyFrameDatabase erase 1\n";
 
     int counter = 0;
@@ -138,7 +138,7 @@ void KeyFrameDatabase::clear()
 
 void KeyFrameDatabase::clearMap(boost::interprocess::offset_ptr<Map>  pMap)
 {
-    unique_lock<mutex> lock(mMutex);
+    std::scoped_lock<mutex> lock(mMutex);
 
     // Erase elements in the Inverse File for the entry
     for(std::vector<list<boost::interprocess::offset_ptr<KeyFrame> > >::iterator vit=mvInvertedFile.begin(), vend=mvInvertedFile.end(); vit!=vend; vit++)
@@ -170,7 +170,7 @@ vector<boost::interprocess::offset_ptr<KeyFrame> > KeyFrameDatabase::DetectLoopC
     // Search all keyframes that share a word with current keyframes
     // Discard keyframes connected to the query keyframe
     {
-        unique_lock<mutex> lock(mMutex);
+        std::scoped_lock<mutex> lock(mMutex);
 
         //for(DBoW2::BowVector::const_iterator vit=pKF->mBowVec.begin(), vend=pKF->mBowVec.end(); vit != vend; vit++)
         for(auto vit= pKF->mBowVec->begin(); vit!=pKF->mBowVec->end(); vit++)
@@ -300,7 +300,7 @@ void KeyFrameDatabase::DetectCandidates(boost::interprocess::offset_ptr<KeyFrame
     // Search all keyframes that share a word with current keyframes
     // Discard keyframes connected to the query keyframe
     {
-        unique_lock<mutex> lock(mMutex);
+        std::scoped_lock<mutex> lock(mMutex);
 
         //for(DBoW2::BowVector::const_iterator vit=pKF->mBowVec.begin(), vend=pKF->mBowVec.end(); vit != vend; vit++)
         for(auto vit= pKF->mBowVec->begin(); vit!=pKF->mBowVec->end(); vit++)
@@ -543,7 +543,7 @@ void KeyFrameDatabase::DetectBestCandidates(boost::interprocess::offset_ptr<KeyF
 
     // Search all keyframes that share a word with current frame
     {
-        unique_lock<mutex> lock(mMutex);
+        std::scoped_lock<mutex> lock(mMutex);
 
         spConnectedKF = pKF->GetConnectedKeyFrames();
 
@@ -680,7 +680,7 @@ void KeyFrameDatabase::DetectNBestCandidates(boost::interprocess::offset_ptr<Key
 
     // Search all keyframes that share a word with current frame
     {
-        unique_lock<mutex> lock(mMutex);
+        std::scoped_lock<mutex> lock(mMutex);
 
         spConnectedKF = pKF->GetConnectedKeyFrames();
         int counter = 0;
@@ -814,7 +814,7 @@ vector<boost::interprocess::offset_ptr<KeyFrame> > KeyFrameDatabase::DetectReloc
 
     // Search all keyframes that share a word with current frame
     {
-        unique_lock<mutex> lock(mMutex);
+        std::scoped_lock<mutex> lock(mMutex);
 
         for(DBoW2::BowVector::const_iterator vit=F->mBowVec.begin(), vend=F->mBowVec.end(); vit != vend; vit++){
         //for(auto vit= F->mBowVec->begin(); vit!=pKF->mBowVec->end(); vit++){
