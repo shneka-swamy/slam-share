@@ -1364,8 +1364,8 @@ void KeyFrame::SetBadFlag()
     }
 
     {
-        unique_lock<mutex> lock(mMutexConnections);
-        unique_lock<mutex> lock1(mMutexFeatures);
+        unique_lock<mutex> lock(mMutexConnections, std::adopt_lock);
+        unique_lock<mutex> lock1(mMutexFeatures, std::adopt_lock);
 
         //old-code
         //mConnectedKeyFrameWeights.clear();
