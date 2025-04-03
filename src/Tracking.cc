@@ -3801,6 +3801,7 @@ void Tracking::ResetActiveMap(bool bLocMap)
         Verbose::PrintMess("done", Verbose::VERBOSITY_NORMAL);
     }
 
+    std::cout<<"Calling the reset for loop closure -- came out of the mapper loop" << std::endl;
     // Reset Loop Closing
     Verbose::PrintMess("Reseting Loop Closing...", Verbose::VERBOSITY_NORMAL);
     mpLoopClosing->RequestResetActiveMap(pMap);
