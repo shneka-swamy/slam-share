@@ -1065,7 +1065,7 @@ vector<boost::interprocess::offset_ptr<MapPoint> > KeyFrame::GetMapPointMatches(
     // TODO: This can be removed later
     for(int j= 0; j < 40 ; ++j){
         if (lock.owns_lock()){      
-            std::cout<<"Acquired lock"<<std::endl;  
+            //std::cout<<"Acquired lock"<<std::endl;  
             flag = true;
             vector<boost::interprocess::offset_ptr<MapPoint> > tempVec(mvpMapPoints->begin(), mvpMapPoints->end());
             returnvec.insert(returnvec.end(), tempVec.begin(), tempVec.end());
