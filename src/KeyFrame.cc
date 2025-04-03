@@ -1064,7 +1064,7 @@ vector<boost::interprocess::offset_ptr<MapPoint> > KeyFrame::GetMapPointMatches(
     // TODO: This can be removed later
     for(int j= 0; j < 5 ; ++j){
         if (lock.owns_lock()){        
-            std::vector<MapPoint*> tempVec(mvpMapPoints->begin(), mvpMapPoints->end());
+            vector<boost::interprocess::offset_ptr<MapPoint> > tempVec(mvpMapPoints->begin(), mvpMapPoints->end());
             returnvec.insert(returnvec.end(), tempVec.begin(), tempVec.end());
             // for(size_t i=0; i<mvpMapPoints->size(); i++){
             //     returnvec.push_back((*mvpMapPoints)[i]);
