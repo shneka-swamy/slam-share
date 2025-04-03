@@ -471,8 +471,10 @@ void MapPoint::Replace(boost::interprocess::offset_ptr<MapPoint>  pMP)
 
 bool MapPoint::isBad()
 {
-    std::scoped_lock<mutex> lock1(mMutexFeatures,std::defer_lock);
-    std::scoped_lock<mutex> lock2(mMutexPos,std::defer_lock);
+    // std::scoped_lock<mutex> lock1(mMutexFeatures,std::defer_lock);
+    // std::scoped_lock<mutex> lock2(mMutexPos,std::defer_lock);
+    std::scoped_lock<mutex> lock1(mMutexFeatures);
+    std::scoped_lock<mutex> lock2(mMutexPos);
     lock(lock1, lock2);
 
     return mbBad;
