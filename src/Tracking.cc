@@ -3386,12 +3386,12 @@ void Tracking::UpdateLocalPoints()
                 pMP->mnTrackReferenceForFrame=mCurrentFrame.mnId;
             }
 
-            if (count_debug2 > 5){
+            if (count_debug2 > 3){
                 break;
             }
     
         }
-        if(count_debug >= 5){
+        if(count_debug >= 3){
             break;
         } 
 
