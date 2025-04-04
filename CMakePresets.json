@@ -18,6 +18,18 @@
       }
     },
     {
+      "name": "fast-debug",
+      "displayName": "Fast Debug Build",
+      "description": "Optimized with debug symbols in build/fast-debug",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/fast-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_CXX_FLAGS_RELWITHDEBINFO": "-O2 -g",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      }
+    },
+    {
       "name": "release",
       "displayName": "Release Build",
       "description": "Release build in build/release",
@@ -35,6 +47,12 @@
       "displayName":  "Build Debug",
       "description": "Build the debug version",
       "configurePreset": "debug"
+    },
+    {
+      "name": "fast-debug",
+      "displayName": "Build Fast Debug",
+      "description": "Build the fast debug version",
+      "configurePreset": "fast-debug"
     },
     {
       "name": "release",
