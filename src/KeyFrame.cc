@@ -1364,8 +1364,8 @@ void KeyFrame::SetBadFlag()
     }
 
     {
-        std::scoped_lock<mutex> lock(mMutexConnections);
-        std::scoped_lock<mutex> lock1(mMutexFeatures);
+        std::scoped_lock<mutex,mutex> lock(mMutexConnections, mMutexFeatures);
+        //std::scoped_lock<mutex> lock1(mMutexFeatures);
 
         //old-code
         //mConnectedKeyFrameWeights.clear();
@@ -1575,8 +1575,8 @@ float KeyFrame::ComputeSceneMedianDepth(const int q)
     vector<boost::interprocess::offset_ptr<MapPoint> > vpMapPoints;
     cv::Mat Tcw_;
     {
-        std::scoped_lock<mutex> lock(mMutexFeatures);
-        std::scoped_lock<mutex> lock2(mMutexPose);
+        std::scoped_lock<mutex, mutex> lock(mMutexFeatures,mMutexPose);
+        //std::scoped_lock<mutex> lock2(mMutexPose);
         vpMapPoints.assign(mvpMapPoints.get()->begin(),mvpMapPoints.get()->end());// = mvpMapPoints;
         /*
         mvpMapPoints_vector.clear();
