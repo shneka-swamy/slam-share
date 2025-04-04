@@ -1756,7 +1756,7 @@ void Tracking::Track()
     mbCreatedMap = false;
 
     // Get Map Mutex -> Map cannot be changed
-    std::scoped_lock<mutex, mutex> lock(pCurrentMap->mMutexMapUpdate, mMutexMap);
+    std::scoped_lock<mutex> lock(pCurrentMap->mMutexMapUpdate);
 
     mbMapUpdated = false;
 

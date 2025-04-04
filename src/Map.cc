@@ -655,7 +655,7 @@ unsigned int Map::GetLowerKFID()
 
 int Map::GetMapChangeIndex()
 {
-    //std::scoped_lock<mutex> lock(mMutexMap);
+    std::scoped_lock<mutex> lock(mMutexMap);
     return mnMapChange;
 }
 
@@ -667,13 +667,13 @@ void Map::IncreaseChangeIndex()
 
 int Map::GetLastMapChange()
 {
-    //std::scoped_lock<mutex> lock(mMutexMap);
+    std::scoped_lock<mutex> lock(mMutexMap);
     return mnMapChangeNotified;
 }
 
 void Map::SetLastMapChange(int currentChangeId)
 {
-    //std::scoped_lock<mutex> lock(mMutexMap);
+    std::scoped_lock<mutex> lock(mMutexMap);
     mnMapChangeNotified = currentChangeId;
 }
 
