@@ -1162,44 +1162,44 @@ cv::Matx33f LocalMapping::SkewSymmetricMatrix_(const cv::Matx31f &v)
     return skew;
 }
 
-void LocalMapping::RequestReset()
-{
-    {
-        std::scoped_lock<std::mutex> lock(mMutexReset);
-        std::cout << "LM: Map reset received" << std::endl;
-        mbResetRequested = true;
-    }
-    std::cout << "LM: Map reset, waiting..." << std::endl;
-
-    // Wait until mbResetRequested becomes false
-    {
-        //std::scoped_lock<std::mutex> lock(mMutexReset);
-        mCondVarReset1.wait(lock, [this] { return !mbResetRequested; });
-    }
-
-    std::cout << "LM: Map reset, Done!!!" << std::endl;
-}
-
 // void LocalMapping::RequestReset()
 // {
 //     {
-//         std::scoped_lock<mutex> lock(mMutexReset);
-//         cout << "LM: Map reset recieved" << endl;
+//         std::scoped_lock<std::mutex> lock(mMutexReset);
+//         std::cout << "LM: Map reset received" << std::endl;
 //         mbResetRequested = true;
 //     }
-//     cout << "LM: Map reset, waiting..." << endl;
+//     std::cout << "LM: Map reset, waiting..." << std::endl;
 
-//     while(1)
+//     // Wait until mbResetRequested becomes false
 //     {
-//         {
-//             std::scoped_lock<mutex> lock2(mMutexReset);
-//             if(!mbResetRequested)
-//                 break;
-//         }
-//         usleep(3000);
+//         //std::scoped_lock<std::mutex> lock(mMutexReset);
+//         //mCondVarReset1.wait(lock, [this] { return !mbResetRequested; });
 //     }
-//     cout << "LM: Map reset, Done!!!" << endl;
+
+//     std::cout << "LM: Map reset, Done!!!" << std::endl;
 // }
+
+void LocalMapping::RequestReset()
+{
+    {
+        std::scoped_lock<mutex> lock(mMutexReset);
+        cout << "LM: Map reset recieved" << endl;
+        mbResetRequested = true;
+    }
+    cout << "LM: Map reset, waiting..." << endl;
+
+    while(1)
+    {
+        {
+            std::scoped_lock<mutex> lock2(mMutexReset);
+            if(!mbResetRequested)
+                break;
+        }
+        usleep(3000);
+    }
+    cout << "LM: Map reset, Done!!!" << endl;
+}
 
 void LocalMapping::RequestResetActiveMap(boost::interprocess::offset_ptr<Map>  pMap)
 {
@@ -1211,10 +1211,10 @@ void LocalMapping::RequestResetActiveMap(boost::interprocess::offset_ptr<Map>  p
     }
     cout << "LM: Active map reset, waiting..." << endl;
 
-    {
-       // std::scoped_lock<mutex> lock(mMutexReset);
-        mCondVarReset.wait(lock, [this] { return !mbResetRequestedActiveMap; });
-    }
+    // {
+    //    // std::scoped_lock<mutex> lock(mMutexReset);
+    //     mCondVarReset.wait(lock, [this] { return !mbResetRequestedActiveMap; });
+    // }
 
     // while(true)
     // {
@@ -1223,15 +1223,15 @@ void LocalMapping::RequestResetActiveMap(boost::interprocess::offset_ptr<Map>  p
     //             break;
     //     mCondVarReset.wait(lock2);
     // }
-    // while(1)
-    // {
-    //     {
-    //         std::scoped_lock<mutex> lock2(mMutexReset, std::adopt_lock);
-    //         if(!mbResetRequestedActiveMap)
-    //             break;
-    //     }
-    //     usleep(3000);
-    // }
+    while(1)
+    {
+        {
+            //std::scoped_lock<mutex> lock2(mMutexReset);
+            if(!mbResetRequestedActiveMap)
+                break;
+        }
+        usleep(3000);
+    }
     cout << "LM: Active map reset, Done!!!" << endl;
 }
 
