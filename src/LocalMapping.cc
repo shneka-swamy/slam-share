@@ -273,8 +273,6 @@ void LocalMapping::Run()
             if(CheckFinish())
                 break;
         }
-
-        std::cout<<"Calling the reset function"<<endl;
         ResetIfRequested();
 
         // Tracking will see that Local Mapping is busy
