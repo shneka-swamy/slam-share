@@ -68,6 +68,11 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     "This is free software, and you are welcome to redistribute it" << endl <<
     "under certain conditions. See LICENSE.txt." << endl << endl;
 
+    if (!segment.check_sanity()) {
+        std::cerr << "Shared memory check failed";
+
+        throw std::runtime_error("Shared memory check failed");
+    }
     
     cout << "Input sensor was set to: ";
     boost::interprocess::shared_memory_object::remove("MySharedMemory");

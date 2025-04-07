@@ -24,9 +24,10 @@
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/fast-debug",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-        "CMAKE_CXX_FLAGS_RELWITHDEBINFO": "-O2 -g",
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+     "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "CMAKE_CXX_FLAGS_RELWITHDEBINFO": "-O2 -g -gsplit-dwarf",
+        "CMAKE_C_FLAGS_RELWITHDEBINFO": "-O2 -g -gsplit-dwarf"
       }
     },
     {
