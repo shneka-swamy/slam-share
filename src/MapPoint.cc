@@ -322,7 +322,7 @@ void MapPoint::EraseObservation(boost::interprocess::offset_ptr<KeyFrame>  pKF)
 {
     bool bBad=false;
     {
-        std::_lock<mutex> lock(mMutexFeatures);
+        std::scoped_lock<mutex> lock(mMutexFeatures);
         //if(mObservations.count(pKF))
         if(mObservations->count(pKF))
         {
