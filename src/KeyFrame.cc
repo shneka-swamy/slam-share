@@ -1051,7 +1051,7 @@ int KeyFrame::TrackedMapPoints(const int &minObs)
 
 vector<boost::interprocess::offset_ptr<MapPoint> > KeyFrame::GetMapPointMatches()
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures, std::adopt_lock);
+    std::scoped_lock<mutex> lock(mMutexFeatures);
     vector<boost::interprocess::offset_ptr<MapPoint> > returnvec;
     //returnvec.assign(mvpMapPoints.get()->begin(),mvpMapPoints.get()->end());
     //return mvpMapPoints;
