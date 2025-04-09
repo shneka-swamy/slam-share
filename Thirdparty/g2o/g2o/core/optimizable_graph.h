@@ -648,7 +648,7 @@ namespace g2o {
      * @param verbose output edges with not PSD information matrix on cerr
      * @return true if all edges have PSD information matrix
      */
-    bool verifyInformationMatrices(bool verbose = false) const;
+    bool verifyInformationMatrices(bool verbose = true) const;
 
     // helper functions to save an individual vertex
     bool saveVertex(std::ostream& os, Vertex* v) const;
