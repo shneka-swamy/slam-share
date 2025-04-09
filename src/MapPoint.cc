@@ -286,7 +286,7 @@ boost::interprocess::offset_ptr<KeyFrame>  MapPoint::GetReferenceKeyFrame()
 
 void MapPoint::AddObservation(boost::interprocess::offset_ptr<KeyFrame>  pKF, int idx)
 {
-    std::unique_lock<mutex> lock(mMutexFeatures, std::adopt_lock);
+    std::scoped_lock<mutex> lock(mMutexFeatures);
     tuple<int,int> indexes;
 
     //if(mObservations.count(pKF)){
@@ -322,7 +322,7 @@ void MapPoint::EraseObservation(boost::interprocess::offset_ptr<KeyFrame>  pKF)
 {
     bool bBad=false;
     {
-        std::unique_lock<mutex> lock(mMutexFeatures, std::adopt_lock);
+        std::_lock<mutex> lock(mMutexFeatures);
         //if(mObservations.count(pKF))
         if(mObservations->count(pKF))
         {
