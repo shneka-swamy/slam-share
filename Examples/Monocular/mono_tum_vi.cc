@@ -44,14 +44,14 @@ void rec_data(void)
       try
     {
       {
-        boost::mutex::unique_lock lk(debug_mutex);
+        boost::mutex::scoped_lock lk(debug_mutex);
         //std::lock_guard<std::mutex> lk(debug_mutex);
         std::cout << "Receiving data...\n";
       }
       async_tcp_server recv_file_tcp_server(65000);
       if(debugmode)
         {
-          boost::mutex::unique_lock lk(debug_mutex);
+          boost::mutex::scoped_lock lk(debug_mutex);
           //std::lock_guard<std::mutex> lk(debug_mutex);
           debug_global << "Received\n";
         }

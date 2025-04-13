@@ -914,7 +914,7 @@ cv::Matx33f LocalMapping::ComputeF12_(boost::interprocess::offset_ptr<KeyFrame> 
 
 void LocalMapping::RequestStop()
 {
-    std::unique_lock lock(mMutexStop, mMutexNewKFs);
+    std::scoped_lock lock(mMutexStop, mMutexNewKFs);
     mbStopRequested = true;
     mbAbortBA = true;
 }
@@ -946,7 +946,7 @@ bool LocalMapping::stopRequested()
 
 void LocalMapping::Release()
 {
-    std::unique_lock lock(mMutexStop, mMutexFinish);
+    std::scoped_lock lock(mMutexStop, mMutexFinish);
     if(mbFinished)
         return;
     mbStopped = false;
@@ -1295,7 +1295,7 @@ bool LocalMapping::CheckFinish()
 
 void LocalMapping::SetFinish()
 {
-    std::unique_lock lock(mMutexFinish, mMutexStop);
+    std::scoped_lock lock(mMutexFinish, mMutexStop);
     mbFinished = true;    
     mbStopped = true;
 }
