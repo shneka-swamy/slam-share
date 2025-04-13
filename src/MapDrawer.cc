@@ -423,7 +423,7 @@ void MapDrawer::DrawCurrentCamera(pangolin::OpenGlMatrix &Twc)
 
 void MapDrawer::SetCurrentCameraPose(const cv::Mat &Tcw)
 {
-    std::scoped_lock<mutex> lock(mMutexCamera);
+    std::unique_lock<mutex> lock(mMutexCamera);
     mCameraPose = Tcw.clone();
 }
 
@@ -434,7 +434,7 @@ void MapDrawer::GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix &M, pangolin
         cv::Mat Rwc(3,3,CV_32F);
         cv::Mat twc(3,1,CV_32F);
         {
-            std::scoped_lock<mutex> lock(mMutexCamera);
+            std::unique_lock<mutex> lock(mMutexCamera);
             Rwc = mCameraPose.rowRange(0,3).colRange(0,3).t();
             twc = -Rwc*mCameraPose.rowRange(0,3).col(3);
         }
@@ -479,7 +479,7 @@ void MapDrawer::GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix &M, pangolin
         cv::Mat twc(3,1,CV_32F);
         cv::Mat Rwwp(3,3,CV_32F);
         {
-            std::scoped_lock<mutex> lock(mMutexCamera);
+            std::unique_lock<mutex> lock(mMutexCamera);
             Rwc = mCameraPose.rowRange(0,3).colRange(0,3).t();
             twc = -Rwc*mCameraPose.rowRange(0,3).col(3);
         }

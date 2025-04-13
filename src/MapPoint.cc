@@ -81,7 +81,7 @@ MapPoint::MapPoint(const cv::Mat &Pos, boost::interprocess::offset_ptr<KeyFrame>
     mbTrackInView = false;
 
     // MapPoints can be created from Tracking and Local Mapping. This mutex avoid conflicts with id.
-    std::scoped_lock<mutex> lock(mpMap->mMutexPointCreation);
+    std::unique_lock<mutex> lock(mpMap->mMutexPointCreation);
     mnId=nNextId++;
 
     //the observations
@@ -129,7 +129,7 @@ MapPoint::MapPoint(const double invDepth, cv::Point2f uv_init, boost::interproce
 
     // Worldpos is not set
     // MapPoints can be created from Tracking and Local Mapping. This mutex avoid conflicts with id.
-    std::scoped_lock<mutex> lock(mpMap->mMutexPointCreation);
+    std::unique_lock<mutex> lock(mpMap->mMutexPointCreation);
     mnId=nNextId++;
 
     //the observations
@@ -210,7 +210,7 @@ MapPoint::MapPoint(const cv::Mat &Pos, boost::interprocess::offset_ptr<Map>  pMa
     pFrame->mDescriptors.row(idxF).copyTo(mDescriptor);
 
     // MapPoints can be created from Tracking and Local Mapping. This mutex avoid conflicts with id.
-    std::scoped_lock<mutex> lock(mpMap->mMutexPointCreation);
+    std::unique_lock<mutex> lock(mpMap->mMutexPointCreation);
     mnId=nNextId++;
 
     //the observations
@@ -220,8 +220,8 @@ MapPoint::MapPoint(const cv::Mat &Pos, boost::interprocess::offset_ptr<Map>  pMa
 
 void MapPoint::SetWorldPos(const cv::Mat &Pos)
 {
-    std::scoped_lock<mutex> lock2(mGlobalMutex);
-    std::scoped_lock<mutex> lock(mMutexPos);
+    std::scoped_lock lock2(mGlobalMutex, mMutexPos);
+    //std::unique_lock<mutex> lock(mMutexPos);
     Pos.copyTo(mWorldPos);
     mWorldPosx = cv::Matx31f(Pos.at<float>(0), Pos.at<float>(1), Pos.at<float>(2));
 }
@@ -252,7 +252,7 @@ void MapPoint::FixMatrices(){
 
 cv::Mat MapPoint::GetWorldPos()
 {
-    std::scoped_lock<mutex> lock(mMutexPos);
+    std::unique_lock<mutex> lock(mMutexPos);
     cv::Mat returnable = cv::Mat(3,1,CV_32F,mWorldPos_ptr.get());
     return returnable.clone();
     //return mWorldPos.clone();
@@ -260,7 +260,7 @@ cv::Mat MapPoint::GetWorldPos()
 
 cv::Mat MapPoint::GetNormal()
 {
-    std::scoped_lock<mutex> lock(mMutexPos);
+    std::unique_lock<mutex> lock(mMutexPos);
     cv::Mat temp = cv::Mat(3,1,CV_32F,mNormalVector_ptr.get());
     return temp.clone();
     //return mNormalVector.clone();
@@ -268,25 +268,25 @@ cv::Mat MapPoint::GetNormal()
 
 cv::Matx31f MapPoint::GetWorldPos2()
 {
-    std::scoped_lock<mutex> lock(mMutexPos);
+    std::unique_lock<mutex> lock(mMutexPos);
     return mWorldPosx;
 }
 
 cv::Matx31f MapPoint::GetNormal2()
 {
-    std::scoped_lock<mutex> lock(mMutexPos);
+    std::unique_lock<mutex> lock(mMutexPos);
     return mNormalVectorx;
 }
 
 boost::interprocess::offset_ptr<KeyFrame>  MapPoint::GetReferenceKeyFrame()
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures);
     return mpRefKF;
 }
 
 void MapPoint::AddObservation(boost::interprocess::offset_ptr<KeyFrame>  pKF, int idx)
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures);
     tuple<int,int> indexes;
 
     //if(mObservations.count(pKF)){
@@ -322,7 +322,7 @@ void MapPoint::EraseObservation(boost::interprocess::offset_ptr<KeyFrame>  pKF)
 {
     bool bBad=false;
     {
-        std::scoped_lock<mutex> lock(mMutexFeatures);
+        std::unique_lock<mutex> lock(mMutexFeatures);
         //if(mObservations.count(pKF))
         if(mObservations->count(pKF))
         {
@@ -361,7 +361,7 @@ void MapPoint::EraseObservation(boost::interprocess::offset_ptr<KeyFrame>  pKF)
 
 std::map<boost::interprocess::offset_ptr<KeyFrame> , std::tuple<int,int>>  MapPoint::GetObservations()
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures);
     std::map<boost::interprocess::offset_ptr<KeyFrame> , std::tuple<int,int> > returnable;
 
     //for (auto const& x: mObservations){
@@ -375,7 +375,7 @@ std::map<boost::interprocess::offset_ptr<KeyFrame> , std::tuple<int,int>>  MapPo
 
 int MapPoint::Observations()
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures);
     return nObs;
 }
 
@@ -383,8 +383,8 @@ void MapPoint::SetBadFlag()
 {
     map<boost::interprocess::offset_ptr<KeyFrame> , tuple<int,int>> obs;
     {
-        std::scoped_lock<mutex> lock1(mMutexFeatures);
-        std::scoped_lock<mutex> lock2(mMutexPos);
+        std::scoped_lock<mutex> lock1(mMutexFeatures, mMutexPos);
+        //std::unique_lock<mutex> lock2(mMutexPos);
         mbBad=true;
         obs.insert(mObservations->begin(), mObservations->end());
         //obs = mObservations;
@@ -408,8 +408,8 @@ void MapPoint::SetBadFlag()
 
 boost::interprocess::offset_ptr<MapPoint>  MapPoint::GetReplaced()
 {
-    std::scoped_lock<mutex> lock1(mMutexFeatures);
-    std::scoped_lock<mutex> lock2(mMutexPos);
+    std::scoped_lock lock1(mMutexFeatures, mMutexPos);
+    //std::scoped_lock lock2(mMutexPos);
     return mpReplaced;
 }
 
@@ -421,8 +421,8 @@ void MapPoint::Replace(boost::interprocess::offset_ptr<MapPoint>  pMP)
     int nvisible, nfound;
     map<boost::interprocess::offset_ptr<KeyFrame> ,tuple<int,int>> obs;
     {
-        std::scoped_lock<mutex> lock1(mMutexFeatures);
-        std::scoped_lock<mutex> lock2(mMutexPos);
+        std::scoped_lock lock1(mMutexFeatures, mMutexPos);
+        // std::scoped_lock lock2(mMutexPos);
         obs.insert(mObservations->begin(), mObservations->end());
         mObservations->clear();
         //obs=mObservations;
@@ -472,9 +472,9 @@ void MapPoint::Replace(boost::interprocess::offset_ptr<MapPoint>  pMP)
 bool MapPoint::isBad()
 {
     // std::scoped_lock<mutex> lock1(mMutexFeatures,std::defer_lock);
-    // std::scoped_lock<mutex> lock2(mMutexPos,std::defer_lock);
+    // std::scoped_lock lock2(mMutexPos,std::defer_lock);
     std::scoped_lock<mutex, mutex> lock(mMutexFeatures, mMutexPos);
-    //std::scoped_lock<mutex> lock2(mMutexPos);
+    //std::unique_lock<mutex> lock2(mMutexPos);
     //lock(lock1, lock2);
 
     return mbBad;
@@ -482,19 +482,19 @@ bool MapPoint::isBad()
 
 void MapPoint::IncreaseVisible(int n)
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures);
     mnVisible+=n;
 }
 
 void MapPoint::IncreaseFound(int n)
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures);
     mnFound+=n;
 }
 
 float MapPoint::GetFoundRatio()
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures);
     return static_cast<float>(mnFound)/mnVisible;
 }
 
@@ -506,7 +506,7 @@ void MapPoint::ComputeDistinctiveDescriptors()
     map<boost::interprocess::offset_ptr<KeyFrame> ,tuple<int,int>> observations;
 
     {
-        std::scoped_lock<mutex> lock1(mMutexFeatures);
+        std::unique_lock<mutex> lock1(mMutexFeatures);
         if(mbBad)
             return;
         //observations=mObservations;
@@ -570,7 +570,7 @@ void MapPoint::ComputeDistinctiveDescriptors()
     }
 
     {
-        std::scoped_lock<mutex> lock(mMutexFeatures);
+        std::unique_lock<mutex> lock(mMutexFeatures);
         //mDescriptor = vDescriptors[BestIdx].clone();
         //std::cout<<"vDescriptors[BestIdx] size: "<<vDescriptors[BestIdx].size()<<" and size of mDescriptor "<<mDescriptor.size()<<std::endl;
         vDescriptors[BestIdx].copyTo(mDescriptor);
@@ -579,13 +579,13 @@ void MapPoint::ComputeDistinctiveDescriptors()
 
 cv::Mat MapPoint::GetDescriptor()
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures);
     return mDescriptor.clone();
 }
 
 tuple<int,int> MapPoint::GetIndexInKeyFrame(boost::interprocess::offset_ptr<KeyFrame> pKF)
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures);
     //if(mObservations.count(pKF))
     //    return mObservations[pKF];
     if(mObservations->count(pKF))
@@ -596,7 +596,7 @@ tuple<int,int> MapPoint::GetIndexInKeyFrame(boost::interprocess::offset_ptr<KeyF
 
 bool MapPoint::IsInKeyFrame(boost::interprocess::offset_ptr<KeyFrame> pKF)
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures);
     //return (mObservations.count(pKF));
     return (mObservations->count(pKF));
 }
@@ -608,8 +608,8 @@ void MapPoint::UpdateNormalAndDepth()
     boost::interprocess::offset_ptr<KeyFrame>  pRefKF;
     cv::Mat Pos;
     {
-        std::scoped_lock<mutex> lock1(mMutexFeatures);
-        std::scoped_lock<mutex> lock2(mMutexPos);
+        std::scoped_lock lock1(mMutexFeatures, mMutexPos);
+        //std::scoped_lock lock2(mMutexPos);
         if(mbBad)
             return;
         //observations=mObservations;
@@ -678,20 +678,20 @@ void MapPoint::UpdateNormalAndDepth()
 
 void MapPoint::SetNormalVector(cv::Mat& normal)
 {
-    std::scoped_lock<mutex> lock3(mMutexPos);
+    std::unique_lock<mutex> lock3(mMutexPos);
     mNormalVector = normal;
     mNormalVectorx = cv::Matx31f(mNormalVector.at<float>(0), mNormalVector.at<float>(1), mNormalVector.at<float>(2));
 }
 
 float MapPoint::GetMinDistanceInvariance()
 {
-    std::scoped_lock<mutex> lock(mMutexPos);
+    std::unique_lock<mutex> lock(mMutexPos);
     return 0.8f*mfMinDistance;
 }
 
 float MapPoint::GetMaxDistanceInvariance()
 {
-    std::scoped_lock<mutex> lock(mMutexPos);
+    std::unique_lock<mutex> lock(mMutexPos);
     return 1.2f*mfMaxDistance;
 }
 
@@ -699,7 +699,7 @@ int MapPoint::PredictScale(const float &currentDist, boost::interprocess::offset
 {
     float ratio;
     {
-        std::scoped_lock<mutex> lock(mMutexPos);
+        std::unique_lock<mutex> lock(mMutexPos);
         ratio = mfMaxDistance/currentDist;
     }
 
@@ -716,7 +716,7 @@ int MapPoint::PredictScale(const float &currentDist, Frame* pF)
 {
     float ratio;
     {
-        std::scoped_lock<mutex> lock(mMutexPos);
+        std::unique_lock<mutex> lock(mMutexPos);
         ratio = mfMaxDistance/currentDist;
     }
 
@@ -731,13 +731,13 @@ int MapPoint::PredictScale(const float &currentDist, Frame* pF)
 
 boost::interprocess::offset_ptr<Map>  MapPoint::GetMap()
 {
-    std::scoped_lock<mutex> lock(mMutexMap);
+    std::unique_lock<mutex> lock(mMutexMap);
     return mpMap;
 }
 
 void MapPoint::UpdateMap(boost::interprocess::offset_ptr<Map>  pMap)
 {
-    std::scoped_lock<mutex> lock(mMutexMap);
+    std::unique_lock<mutex> lock(mMutexMap);
     mpMap = pMap;
 }
 

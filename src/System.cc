@@ -288,7 +288,7 @@ cv::Mat System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const
 
     // Check mode change
     {
-        std::scoped_lock<mutex> lock(mMutexMode);
+        std::unique_lock<mutex> lock(mMutexMode);
         if(mbActivateLocalizationMode)
         {
             mpLocalMapper->RequestStop();
@@ -312,7 +312,7 @@ cv::Mat System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const
 
     // Check reset
     {
-        std::scoped_lock<mutex> lock(mMutexReset);
+        std::unique_lock<mutex> lock(mMutexReset);
         if(mbReset)
         {
             mpTracker->Reset();
@@ -355,7 +355,7 @@ cv::Mat System::TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const doub
 
     // Check mode change
     {
-        std::scoped_lock<mutex> lock(mMutexMode);
+        std::unique_lock<mutex> lock(mMutexMode);
         if(mbActivateLocalizationMode)
         {
             mpLocalMapper->RequestStop();
@@ -379,7 +379,7 @@ cv::Mat System::TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const doub
 
     // Check reset
     {
-        std::scoped_lock<mutex> lock(mMutexReset);
+        std::unique_lock<mutex> lock(mMutexReset);
         if(mbReset)
         {
             mpTracker->Reset();
@@ -396,7 +396,7 @@ cv::Mat System::TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const doub
 
     cv::Mat Tcw = mpTracker->GrabImageRGBD(im,depthmap,timestamp,filename);
 
-    std::scoped_lock<mutex> lock2(mMutexState);
+    std::unique_lock<mutex> lock2(mMutexState);
     mTrackingState = mpTracker->mState;
     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
@@ -413,7 +413,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp, const
 
     // Check mode change
     {
-        std::scoped_lock<mutex> lock(mMutexMode);
+        std::unique_lock<mutex> lock(mMutexMode);
         if(mbActivateLocalizationMode)
         {
             mpLocalMapper->RequestStop();
@@ -437,7 +437,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp, const
 
     // Check reset
     {
-        std::scoped_lock<mutex> lock(mMutexReset);
+        std::unique_lock<mutex> lock(mMutexReset);
         if(mbReset)
         {
             mpTracker->Reset();
@@ -458,7 +458,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp, const
 
     cv::Mat Tcw = mpTracker->GrabImageMonocular(im,timestamp,filename);
 
-    std::scoped_lock<mutex> lock2(mMutexState);
+    std::unique_lock<mutex> lock2(mMutexState);
     mTrackingState = mpTracker->mState;
     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
@@ -470,13 +470,13 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp, const
 
 void System::ActivateLocalizationMode()
 {
-    std::scoped_lock<mutex> lock(mMutexMode);
+    std::unique_lock<mutex> lock(mMutexMode);
     mbActivateLocalizationMode = true;
 }
 
 void System::DeactivateLocalizationMode()
 {
-    std::scoped_lock<mutex> lock(mMutexMode);
+    std::unique_lock<mutex> lock(mMutexMode);
     mbDeactivateLocalizationMode = true;
 }
 
@@ -495,13 +495,13 @@ bool System::MapChanged()
 
 void System::Reset()
 {
-    std::scoped_lock<mutex> lock(mMutexReset);
+    std::unique_lock<mutex> lock(mMutexReset);
     mbReset = true;
 }
 
 void System::ResetActiveMap()
 {
-    std::scoped_lock<mutex> lock(mMutexReset);
+    std::unique_lock<mutex> lock(mMutexReset);
     mbResetActiveMap = true;
 }
 
@@ -878,19 +878,19 @@ void System::SaveTrajectoryKITTI(const string &filename)
 
 int System::GetTrackingState()
 {
-    std::scoped_lock<mutex> lock(mMutexState);
+    std::unique_lock<mutex> lock(mMutexState);
     return mTrackingState;
 }
 
 vector<boost::interprocess::offset_ptr<MapPoint> > System::GetTrackedMapPoints()
 {
-    std::scoped_lock<mutex> lock(mMutexState);
+    std::unique_lock<mutex> lock(mMutexState);
     return mTrackedMapPoints;
 }
 
 vector<cv::KeyPoint> System::GetTrackedKeyPointsUn()
 {
-    std::scoped_lock<mutex> lock(mMutexState);
+    std::unique_lock<mutex> lock(mMutexState);
     return mTrackedKeyPointsUn;
 }
 
@@ -1274,7 +1274,7 @@ void System::PostLoad(){
                     //string tmp;
                     //getline(cin,tmp);
                     //while(true){
-                            //std::scoped_lock<mutex> lock(mpLoopCloser->passedCheckingMutex);
+                            //std::unique_lock<mutex> lock(mpLoopCloser->passedCheckingMutex);
                             //if(!mpLoopCloser->passedChecking){
                             //mpKeyFrameDatabase->add(k);
                             
@@ -1651,7 +1651,7 @@ void System::PostLoad2(){
                     //string tmp;
                     //getline(cin,tmp);
                     //while(true){
-                            //std::scoped_lock<mutex> lock(mpLoopCloser->passedCheckingMutex);
+                            //std::unique_lock<mutex> lock(mpLoopCloser->passedCheckingMutex);
                             //if(!mpLoopCloser->passedChecking){
                             //mpKeyFrameDatabase->add(k);
                             

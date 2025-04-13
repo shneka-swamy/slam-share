@@ -140,7 +140,7 @@ void LocalMapping::Run()
                             if((mTinit<10.f) && (dist<0.02))
                             {
                                 cout << "Not enough motion for initializing. Reseting..." << endl;
-                                std::scoped_lock<mutex> lock(mMutexReset);
+                                std::unique_lock<mutex> lock(mMutexReset);
                                 mbResetRequestedActiveMap = true;
                                 mpMapToReset = mpCurrentKeyFrame->GetMap();
                                 mbBadImu = true;
@@ -289,7 +289,7 @@ void LocalMapping::Run()
 
 void LocalMapping::InsertKeyFrame(boost::interprocess::offset_ptr<KeyFrame> pKF)
 {
-    std::scoped_lock<mutex> lock(mMutexNewKFs);
+    std::unique_lock<mutex> lock(mMutexNewKFs);
     mlNewKeyFrames.push_back(pKF);
     mbAbortBA=true;
 }
@@ -297,14 +297,14 @@ void LocalMapping::InsertKeyFrame(boost::interprocess::offset_ptr<KeyFrame> pKF)
 
 bool LocalMapping::CheckNewKeyFrames()
 {
-    std::scoped_lock<mutex> lock(mMutexNewKFs);
+    std::unique_lock<mutex> lock(mMutexNewKFs);
     return(!mlNewKeyFrames.empty());
 }
 
 void LocalMapping::ProcessNewKeyFrame()
 {
     {
-        std::scoped_lock<mutex> lock(mMutexNewKFs);
+        std::unique_lock<mutex> lock(mMutexNewKFs);
         mpCurrentKeyFrame = mlNewKeyFrames.front();
         mlNewKeyFrames.pop_front();
     }
@@ -914,15 +914,14 @@ cv::Matx33f LocalMapping::ComputeF12_(boost::interprocess::offset_ptr<KeyFrame> 
 
 void LocalMapping::RequestStop()
 {
-    std::scoped_lock<mutex> lock(mMutexStop);
+    std::unique_lock lock(mMutexStop, mMutexNewKFs);
     mbStopRequested = true;
-    std::scoped_lock<mutex> lock2(mMutexNewKFs);
     mbAbortBA = true;
 }
 
 bool LocalMapping::Stop()
 {
-    std::scoped_lock<mutex> lock(mMutexStop);
+    std::unique_lock<mutex> lock(mMutexStop);
     if(mbStopRequested && !mbNotStop)
     {
         mbStopped = true;
@@ -935,20 +934,19 @@ bool LocalMapping::Stop()
 
 bool LocalMapping::isStopped()
 {
-    std::scoped_lock<mutex> lock(mMutexStop);
+    std::unique_lock<mutex> lock(mMutexStop);
     return mbStopped;
 }
 
 bool LocalMapping::stopRequested()
 {
-    std::scoped_lock<mutex> lock(mMutexStop);
+    std::unique_lock<mutex> lock(mMutexStop);
     return mbStopRequested;
 }
 
 void LocalMapping::Release()
 {
-    std::scoped_lock<mutex> lock(mMutexStop);
-    std::scoped_lock<mutex> lock2(mMutexFinish);
+    std::unique_lock lock(mMutexStop, mMutexFinish);
     if(mbFinished)
         return;
     mbStopped = false;
@@ -962,19 +960,19 @@ void LocalMapping::Release()
 
 bool LocalMapping::AcceptKeyFrames()
 {
-    std::scoped_lock<mutex> lock(mMutexAccept);
+    std::unique_lock<mutex> lock(mMutexAccept);
     return mbAcceptKeyFrames;
 }
 
 void LocalMapping::SetAcceptKeyFrames(bool flag)
 {
-    std::scoped_lock<mutex> lock(mMutexAccept);
+    std::unique_lock<mutex> lock(mMutexAccept);
     mbAcceptKeyFrames=flag;
 }
 
 bool LocalMapping::SetNotStop(bool flag)
 {
-    std::scoped_lock<mutex> lock(mMutexStop);
+    std::unique_lock<mutex> lock(mMutexStop);
 
     if(flag && mbStopped)
         return false;
@@ -1163,7 +1161,7 @@ cv::Matx33f LocalMapping::SkewSymmetricMatrix_(const cv::Matx31f &v)
 // void LocalMapping::RequestReset()
 // {
 //     {
-//         std::scoped_lock<std::mutex> lock(mMutexReset);
+//         std::unique_lock<std::mutex> lock(mMutexReset);
 //         std::cout << "LM: Map reset received" << std::endl;
 //         mbResetRequested = true;
 //     }
@@ -1171,7 +1169,7 @@ cv::Matx33f LocalMapping::SkewSymmetricMatrix_(const cv::Matx31f &v)
 
 //     // Wait until mbResetRequested becomes false
 //     {
-//         //std::scoped_lock<std::mutex> lock(mMutexReset);
+//         //std::unique_lock<std::mutex> lock(mMutexReset);
 //         //mCondVarReset1.wait(lock, [this] { return !mbResetRequested; });
 //     }
 
@@ -1181,7 +1179,7 @@ cv::Matx33f LocalMapping::SkewSymmetricMatrix_(const cv::Matx31f &v)
 void LocalMapping::RequestReset()
 {
     {
-        std::scoped_lock<mutex> lock(mMutexReset);
+        std::unique_lock<mutex> lock(mMutexReset);
         cout << "LM: Map reset recieved" << endl;
         mbResetRequested = true;
     }
@@ -1190,7 +1188,7 @@ void LocalMapping::RequestReset()
     while(1)
     {
         {
-            std::scoped_lock<mutex> lock2(mMutexReset);
+            std::unique_lock<mutex> lock2(mMutexReset);
             if(!mbResetRequested)
                 break;
         }
@@ -1202,7 +1200,7 @@ void LocalMapping::RequestReset()
 void LocalMapping::RequestResetActiveMap(boost::interprocess::offset_ptr<Map>  pMap)
 {
     {
-        std::scoped_lock<mutex> lock(mMutexReset);
+        std::unique_lock<mutex> lock(mMutexReset);
         cout << "LM: Active map reset recieved" << endl;
         mbResetRequestedActiveMap = true;
         mpMapToReset = pMap;
@@ -1210,13 +1208,13 @@ void LocalMapping::RequestResetActiveMap(boost::interprocess::offset_ptr<Map>  p
     cout << "LM: Active map reset, waiting..." << endl;
 
     // {
-    //    // std::scoped_lock<mutex> lock(mMutexReset);
+    //    // std::unique_lock<mutex> lock(mMutexReset);
     //     mCondVarReset.wait(lock, [this] { return !mbResetRequestedActiveMap; });
     // }
 
     // while(true)
     // {
-    //     std::scoped_lock<mutex> lock2(mMutexReset);
+    //     std::unique_lock<mutex> lock2(mMutexReset);
     //         if(!mbResetRequestedActiveMap)
     //             break;
     //     mCondVarReset.wait(lock2);
@@ -1224,7 +1222,7 @@ void LocalMapping::RequestResetActiveMap(boost::interprocess::offset_ptr<Map>  p
     while(1)
     {
         {
-            //std::scoped_lock<mutex> lock2(mMutexReset);
+            //std::unique_lock<mutex> lock2(mMutexReset);
             if(!mbResetRequestedActiveMap)
                 break;
         }
@@ -1237,7 +1235,7 @@ void LocalMapping::ResetIfRequested()
 {
     bool executed_reset = false;
     {
-        std::scoped_lock<mutex> lock(mMutexReset);
+        std::unique_lock<mutex> lock(mMutexReset);
         if(mbResetRequested)
         {
             executed_reset = true;
@@ -1285,27 +1283,26 @@ void LocalMapping::ResetIfRequested()
 
 void LocalMapping::RequestFinish()
 {
-    std::scoped_lock<mutex> lock(mMutexFinish);
+    std::unique_lock<mutex> lock(mMutexFinish);
     mbFinishRequested = true;
 }
 
 bool LocalMapping::CheckFinish()
 {
-    std::scoped_lock<mutex> lock(mMutexFinish);
+    std::unique_lock<mutex> lock(mMutexFinish);
     return mbFinishRequested;
 }
 
 void LocalMapping::SetFinish()
 {
-    std::scoped_lock<mutex> lock(mMutexFinish);
+    std::unique_lock lock(mMutexFinish, mMutexStop);
     mbFinished = true;    
-    std::scoped_lock<mutex> lock2(mMutexStop);
     mbStopped = true;
 }
 
 bool LocalMapping::isFinished()
 {
-    std::scoped_lock<mutex> lock(mMutexFinish);
+    std::unique_lock<mutex> lock(mMutexFinish);
     return mbFinished;
 }
 
@@ -1416,7 +1413,7 @@ void LocalMapping::InitializeIMU(float priorG, float priorA, bool bFIBA)
 
     // Before this line we are not changing the map
 
-    std::scoped_lock<mutex> lock(mpAtlas->GetCurrentMap()->mMutexMapUpdate);
+    std::unique_lock<mutex> lock(mpAtlas->GetCurrentMap()->mMutexMapUpdate);
     std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
     if ((fabs(mScale-1.f)>0.00001)||!mbMonocular)
     {
@@ -1478,7 +1475,7 @@ void LocalMapping::ScaleRefinement()
 {
     // Minimum number of keyframes to compute a solution
     // Minimum time (seconds) between first and last keyframe to compute a solution. Make the difference between monocular and stereo
-    // std::scoped_lock<mutex> lock0(mMutexImuInit);
+    // std::unique_lock<mutex> lock0(mMutexImuInit);
     if (mbResetRequested)
         return;
 
@@ -1517,7 +1514,7 @@ void LocalMapping::ScaleRefinement()
     }
 
     // Before this line we are not changing the map
-    std::scoped_lock<mutex> lock(mpAtlas->GetCurrentMap()->mMutexMapUpdate);
+    std::unique_lock<mutex> lock(mpAtlas->GetCurrentMap()->mMutexMapUpdate);
     std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
     if ((fabs(mScale-1.f)>0.00001)||!mbMonocular)
     {

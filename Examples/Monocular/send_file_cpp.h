@@ -35,7 +35,7 @@ public:
     source_file.open(path, std::ios_base::binary|std::ios_base::ate);
     if(!source_file)
       {
-	boost::mutex::scoped_lock lk(debug_mutex);
+	boost::mutex::unique_lock lk(debug_mutex);
 	std::cout << __LINE__ << "Failed to open " << path << std::endl;
 	return;
       }
@@ -44,7 +44,7 @@ public:
     std::ostream request_stream(&request_);
     request_stream << path << "\n" << file_size << "\n\n";
     {
-      boost::mutex::scoped_lock lk(debug_mutex);
+      boost::mutex::unique_lock lk(debug_mutex);
       std::cout << "Request size: " << request_.size() << std::endl;
     }
     resolver_.async_resolve(server_ip_or_host, port_string, 
@@ -65,7 +65,7 @@ private:
                                          ++endpoint_iterator));
       }
     } else {
-      boost::mutex::scoped_lock lk(debug_mutex);
+      boost::mutex::unique_lock lk(debug_mutex);
       std::cout << "Error: " << err.message() << '\n';
     }
   };

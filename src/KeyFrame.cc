@@ -663,7 +663,7 @@ void KeyFrame::ComputeBoW()
 
 void KeyFrame::SetPose(const cv::Mat &Tcw_)
 {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     Tcw_.copyTo(Tcw);
     cv::Mat Rcw = Tcw.rowRange(0,3).colRange(0,3);
     cv::Mat tcw = Tcw.rowRange(0,3).col(3);
@@ -697,7 +697,7 @@ void KeyFrame::SetPose(const cv::Mat &Tcw_)
 
 void KeyFrame::SetVelocity(const cv::Mat &Vw_)
 {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     Vw_.copyTo(Vw);
 }
 
@@ -706,7 +706,7 @@ cv::Mat KeyFrame::GetPose()
 {
     //std::cout<<"Before making a clone1\n";
    
-    //std::scoped_lock<mutex> lock(mMutexPose);
+    //std::unique_lock<mutex> lock(mMutexPose);
     cv::Mat returnable = cv::Mat(4,4,CV_32F,Tcw_ptr.get());
     //std::cout<<"Before making a clone2\n";
     //return Tcw.clone();
@@ -715,7 +715,7 @@ cv::Mat KeyFrame::GetPose()
 
 cv::Mat KeyFrame::GetPoseInverse()
 {
-    //std::scoped_lock<mutex> lock(mMutexPose);
+    //std::unique_lock<mutex> lock(mMutexPose);
     //new code to see why the problem is coming from some matrix.
     cv::Mat returnable = cv::Mat(4,4,CV_32F,Twc_ptr.get());
     //return Twc.clone();
@@ -724,7 +724,7 @@ cv::Mat KeyFrame::GetPoseInverse()
 
 cv::Mat KeyFrame::GetCameraCenter()
 {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     cv::Mat returnable = cv::Mat(3,1,CV_32F,Ow_ptr.get());
     //return Ow.clone();
     return returnable.clone();
@@ -732,50 +732,50 @@ cv::Mat KeyFrame::GetCameraCenter()
 
 cv::Mat KeyFrame::GetStereoCenter()
 {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     return Cw.clone();
 }
 
 cv::Mat KeyFrame::GetImuPosition()
 {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     return Owb.clone();
 }
 
 cv::Mat KeyFrame::GetImuRotation()
 {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     return Twc.rowRange(0,3).colRange(0,3)*mImuCalib.Tcb.rowRange(0,3).colRange(0,3);
 }
 
 cv::Mat KeyFrame::GetImuPose()
 {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     return Twc*mImuCalib.Tcb;
 }
 
 cv::Mat KeyFrame::GetRotation()
 {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     return Tcw.rowRange(0,3).colRange(0,3).clone();
 }
 
 cv::Mat KeyFrame::GetTranslation()
 {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     return Tcw.rowRange(0,3).col(3).clone();
 }
 
 cv::Mat KeyFrame::GetVelocity()
 {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     return Vw.clone();
 }
 
 void KeyFrame::AddConnection(boost::interprocess::offset_ptr<KeyFrame> pKF, const int &weight)
 {
     {
-        std::scoped_lock<mutex> lock(mMutexConnections);
+        std::unique_lock<mutex> lock(mMutexConnections);
         //old-code
         /*
         if(!mConnectedKeyFrameWeights.count(pKF))
@@ -800,7 +800,7 @@ void KeyFrame::AddConnection(boost::interprocess::offset_ptr<KeyFrame> pKF, cons
 
 void KeyFrame::UpdateBestCovisibles()
 {
-    std::scoped_lock<mutex> lock(mMutexConnections);
+    std::unique_lock<mutex> lock(mMutexConnections);
     vector<pair<int,boost::interprocess::offset_ptr<KeyFrame> > > vPairs;
     
     //vPairs.reserve(mConnectedKeyFrameWeights.size());//old-code
@@ -837,7 +837,7 @@ void KeyFrame::UpdateBestCovisibles()
 
 set<boost::interprocess::offset_ptr<KeyFrame> > KeyFrame::GetConnectedKeyFrames()
 {
-    std::scoped_lock<mutex> lock(mMutexConnections);
+    std::unique_lock<mutex> lock(mMutexConnections);
     set<boost::interprocess::offset_ptr<KeyFrame> > s;
     //old-code
     //for(map<boost::interprocess::offset_ptr<KeyFrame> ,int>::iterator mit=mConnectedKeyFrameWeights.begin();mit!=mConnectedKeyFrameWeights.end();mit++)
@@ -851,7 +851,7 @@ set<boost::interprocess::offset_ptr<KeyFrame> > KeyFrame::GetConnectedKeyFrames(
 
 vector<boost::interprocess::offset_ptr<KeyFrame> > KeyFrame::GetVectorCovisibleKeyFrames()
 {
-    std::scoped_lock<mutex> lock(mMutexConnections);
+    std::unique_lock<mutex> lock(mMutexConnections);
     //old-code
     //return mvpOrderedConnectedKeyFrames;
     //new-code
@@ -860,7 +860,7 @@ vector<boost::interprocess::offset_ptr<KeyFrame> > KeyFrame::GetVectorCovisibleK
 
 vector<boost::interprocess::offset_ptr<KeyFrame> > KeyFrame::GetBestCovisibilityKeyFrames(const int &N)
 {
-    std::scoped_lock<mutex> lock(mMutexConnections);
+    std::unique_lock<mutex> lock(mMutexConnections);
     //std::cout<<"GetBestCovisibilityKeyFrames before IF\n value of size: "<<(*mvpOrderedConnectedKeyFrames).size()<<std::endl;
     //old-code
     //if((int)mvpOrderedConnectedKeyFrames.size()<N){
@@ -885,7 +885,7 @@ vector<boost::interprocess::offset_ptr<KeyFrame> > KeyFrame::GetBestCovisibility
 
 vector<boost::interprocess::offset_ptr<KeyFrame> > KeyFrame::GetCovisiblesByWeight(const int &w)
 {
-    std::scoped_lock<mutex> lock(mMutexConnections);
+    std::unique_lock<mutex> lock(mMutexConnections);
 
     //old-code
     //if(mvpOrderedConnectedKeyFrames.empty())
@@ -922,7 +922,7 @@ vector<boost::interprocess::offset_ptr<KeyFrame> > KeyFrame::GetCovisiblesByWeig
 
 int KeyFrame::GetWeight(boost::interprocess::offset_ptr<KeyFrame> pKF)
 {
-    std::scoped_lock<mutex> lock(mMutexConnections);
+    std::unique_lock<mutex> lock(mMutexConnections);
     /* //old code
     if(mConnectedKeyFrameWeights.count(pKF))
         return mConnectedKeyFrameWeights[pKF];
@@ -938,7 +938,7 @@ int KeyFrame::GetWeight(boost::interprocess::offset_ptr<KeyFrame> pKF)
 
 int KeyFrame::GetNumberMPs()
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures);
     int numberMPs = 0;
     //for(size_t i=0, iend=mvpMapPoints.size(); i<iend; i++)
     std::cout<<"GetNumberMps, before loop\n";
@@ -955,7 +955,7 @@ int KeyFrame::GetNumberMPs()
 
 void KeyFrame::AddMapPoint(boost::interprocess::offset_ptr<MapPoint> pMP, const size_t &idx)
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures);
     //mvpMapPoints[idx]=pMP;
     (*mvpMapPoints).at(idx)=pMP;
     //mvpMapPoints->at(idx)=pMP;
@@ -975,7 +975,7 @@ void KeyFrame::AddMapPoint(boost::interprocess::offset_ptr<MapPoint> pMP, const 
 
 void KeyFrame::EraseMapPointMatch(const int &idx)
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures);
     //mvpMapPoints[idx]=static_cast<boost::interprocess::offset_ptr<MapPoint> >(NULL);
     (*mvpMapPoints)[idx]=static_cast<boost::interprocess::offset_ptr<MapPoint> >(NULL);
 }
@@ -1003,7 +1003,7 @@ void KeyFrame::ReplaceMapPointMatch(const int &idx, boost::interprocess::offset_
 
 set<boost::interprocess::offset_ptr<MapPoint> > KeyFrame::GetMapPoints()
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures);
     set<boost::interprocess::offset_ptr<MapPoint> > s;
     //for(size_t i=0, iend=mvpMapPoints.size(); i<iend; i++)
     for(size_t i=0, iend=mvpMapPoints->size(); i<iend; i++)
@@ -1022,7 +1022,7 @@ set<boost::interprocess::offset_ptr<MapPoint> > KeyFrame::GetMapPoints()
 
 int KeyFrame::TrackedMapPoints(const int &minObs)
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures);
 
     int nPoints=0;
     const bool bCheckObs = minObs>0;
@@ -1051,7 +1051,7 @@ int KeyFrame::TrackedMapPoints(const int &minObs)
 
 vector<boost::interprocess::offset_ptr<MapPoint> > KeyFrame::GetMapPointMatches()
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures);
     vector<boost::interprocess::offset_ptr<MapPoint> > returnvec;
     //returnvec.assign(mvpMapPoints.get()->begin(),mvpMapPoints.get()->end());
     //return mvpMapPoints;
@@ -1075,7 +1075,7 @@ vector<boost::interprocess::offset_ptr<MapPoint> > KeyFrame::GetMapPointMatches(
 
 boost::interprocess::offset_ptr<MapPoint>  KeyFrame::GetMapPoint(const size_t &idx)
 {
-    std::scoped_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures);
     //return mvpMapPoints[idx];
     return (*mvpMapPoints)[idx];
 }
@@ -1087,7 +1087,7 @@ void KeyFrame::UpdateConnections(bool upParent)
     vector<boost::interprocess::offset_ptr<MapPoint> > vpMP;
 
     {
-        std::scoped_lock<mutex> lockMPs(mMutexFeatures);
+        std::unique_lock<mutex> lockMPs(mMutexFeatures);
         //vpMP = mvpMapPoints;
         //vpMP = (*mvpMapPoints);
         //mvpMapPoints_vector.clear();
@@ -1169,7 +1169,7 @@ void KeyFrame::UpdateConnections(bool upParent)
     }
 
     {
-        std::scoped_lock<mutex> lockCon(mMutexConnections);
+        std::unique_lock<mutex> lockCon(mMutexConnections);
 
         //turned off for check
         //mConnectedKeyFrameWeights = KFcounter;
@@ -1197,19 +1197,19 @@ void KeyFrame::UpdateConnections(bool upParent)
 
 void KeyFrame::AddChild(boost::interprocess::offset_ptr<KeyFrame> pKF)
 {
-    std::scoped_lock<mutex> lockCon(mMutexConnections);
+    std::unique_lock<mutex> lockCon(mMutexConnections);
     mspChildrens->insert(pKF);
 }
 
 void KeyFrame::EraseChild(boost::interprocess::offset_ptr<KeyFrame> pKF)
 {
-    std::scoped_lock<mutex> lockCon(mMutexConnections);
+    std::unique_lock<mutex> lockCon(mMutexConnections);
     mspChildrens->erase(pKF);
 }
 
 void KeyFrame::ChangeParent(boost::interprocess::offset_ptr<KeyFrame> pKF)
 {
-    std::scoped_lock<mutex> lockCon(mMutexConnections);
+    std::unique_lock<mutex> lockCon(mMutexConnections);
 
     if(pKF == this)
     {
@@ -1223,7 +1223,7 @@ void KeyFrame::ChangeParent(boost::interprocess::offset_ptr<KeyFrame> pKF)
 
 set<boost::interprocess::offset_ptr<KeyFrame> > KeyFrame::GetChilds()
 {
-    std::scoped_lock<mutex> lockCon(mMutexConnections);
+    std::unique_lock<mutex> lockCon(mMutexConnections);
     //mspChildrens_support.clear();
     set<boost::interprocess::offset_ptr<KeyFrame> > temp_set;
 
@@ -1239,25 +1239,25 @@ set<boost::interprocess::offset_ptr<KeyFrame> > KeyFrame::GetChilds()
 
 boost::interprocess::offset_ptr<KeyFrame>  KeyFrame::GetParent()
 {
-    std::scoped_lock<mutex> lockCon(mMutexConnections);
+    std::unique_lock<mutex> lockCon(mMutexConnections);
     return mpParent;
 }
 
 bool KeyFrame::hasChild(boost::interprocess::offset_ptr<KeyFrame> pKF)
 {
-    std::scoped_lock<mutex> lockCon(mMutexConnections);
+    std::unique_lock<mutex> lockCon(mMutexConnections);
     return mspChildrens->count(pKF);
 }
 
 void KeyFrame::SetFirstConnection(bool bFirst)
 {
-    std::scoped_lock<mutex> lockCon(mMutexConnections);
+    std::unique_lock<mutex> lockCon(mMutexConnections);
     mbFirstConnection=bFirst;
 }
 
 void KeyFrame::AddLoopEdge(boost::interprocess::offset_ptr<KeyFrame> pKF)
 {
-    std::scoped_lock<mutex> lockCon(mMutexConnections);
+    std::unique_lock<mutex> lockCon(mMutexConnections);
     mbNotErase = true;
     //mspLoopEdges.insert(pKF);
     mspLoopEdges->insert(pKF);
@@ -1265,7 +1265,7 @@ void KeyFrame::AddLoopEdge(boost::interprocess::offset_ptr<KeyFrame> pKF)
 
 set<boost::interprocess::offset_ptr<KeyFrame> > KeyFrame::GetLoopEdges()
 {
-    std::scoped_lock<mutex> lockCon(mMutexConnections);
+    std::unique_lock<mutex> lockCon(mMutexConnections);
     std::set<boost::interprocess::offset_ptr<KeyFrame> >temp;
     for(auto  loopedge: *mspLoopEdges){
         temp.insert(loopedge);
@@ -1276,7 +1276,7 @@ set<boost::interprocess::offset_ptr<KeyFrame> > KeyFrame::GetLoopEdges()
 
 void KeyFrame::AddMergeEdge(boost::interprocess::offset_ptr<KeyFrame>  pKF)
 {
-    std::scoped_lock<mutex> lockCon(mMutexConnections);
+    std::unique_lock<mutex> lockCon(mMutexConnections);
     mbNotErase = true;
     //old code
     //mspMergeEdges.insert(pKF);
@@ -1286,7 +1286,7 @@ void KeyFrame::AddMergeEdge(boost::interprocess::offset_ptr<KeyFrame>  pKF)
 
 set<boost::interprocess::offset_ptr<KeyFrame> > KeyFrame::GetMergeEdges()
 {
-    std::scoped_lock<mutex> lockCon(mMutexConnections);
+    std::unique_lock<mutex> lockCon(mMutexConnections);
     //clear the set and then initialize it with real value
     //new code
     mspMergeEdges_support.clear();
@@ -1306,14 +1306,14 @@ set<boost::interprocess::offset_ptr<KeyFrame> > KeyFrame::GetMergeEdges()
 
 void KeyFrame::SetNotErase()
 {
-    std::scoped_lock<mutex> lock(mMutexConnections);
+    std::unique_lock<mutex> lock(mMutexConnections);
     mbNotErase = true;
 }
 
 void KeyFrame::SetErase()
 {
     {
-        std::scoped_lock<mutex> lock(mMutexConnections);
+        std::unique_lock<mutex> lock(mMutexConnections);
         //if(mspLoopEdges.empty())
         if(mspLoopEdges->empty())
         {
@@ -1330,7 +1330,7 @@ void KeyFrame::SetErase()
 void KeyFrame::SetBadFlag()
 {
     {
-        std::scoped_lock<mutex> lock(mMutexConnections);
+        std::unique_lock<mutex> lock(mMutexConnections);
         if(mnId==mpMap->GetInitKFid())
         {
             return;
@@ -1365,7 +1365,7 @@ void KeyFrame::SetBadFlag()
 
     {
         std::scoped_lock<mutex,mutex> lock(mMutexConnections, mMutexFeatures);
-        //std::scoped_lock<mutex> lock1(mMutexFeatures);
+        //std::unique_lock<mutex> lock1(mMutexFeatures);
 
         //old-code
         //mConnectedKeyFrameWeights.clear();
@@ -1475,7 +1475,7 @@ void KeyFrame::EraseConnection(boost::interprocess::offset_ptr<KeyFrame>  pKF)
 {
     bool bUpdate = false;
     {
-        std::scoped_lock<mutex> lock(mMutexConnections);
+        std::unique_lock<mutex> lock(mMutexConnections);
         //if(mConnectedKeyFrameWeights.count(pKF)) //old-code
         if(mConnectedKeyFrameWeights->count(pKF))
         {
@@ -1563,7 +1563,7 @@ cv::Mat KeyFrame::UnprojectStereo(int i)
         const float y = (v-cy)*z*invfy;
         cv::Mat x3Dc = (cv::Mat_<float>(3,1) << x, y, z);
 
-        std::scoped_lock<mutex> lock(mMutexPose);
+        std::unique_lock<mutex> lock(mMutexPose);
         return Twc.rowRange(0,3).colRange(0,3)*x3Dc+Twc.rowRange(0,3).col(3);
     }
     else
@@ -1576,7 +1576,7 @@ float KeyFrame::ComputeSceneMedianDepth(const int q)
     cv::Mat Tcw_;
     {
         std::scoped_lock<mutex, mutex> lock(mMutexFeatures,mMutexPose);
-        //std::scoped_lock<mutex> lock2(mMutexPose);
+        //std::unique_lock<mutex> lock2(mMutexPose);
         vpMapPoints.assign(mvpMapPoints.get()->begin(),mvpMapPoints.get()->end());// = mvpMapPoints;
         /*
         mvpMapPoints_vector.clear();
@@ -1613,7 +1613,7 @@ float KeyFrame::ComputeSceneMedianDepth(const int q)
 
 void KeyFrame::SetNewBias(const IMU::Bias &b)
 {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     mImuBias = b;
     if(mpImuPreintegrated)
         mpImuPreintegrated->SetNewBias(b);
@@ -1621,31 +1621,31 @@ void KeyFrame::SetNewBias(const IMU::Bias &b)
 
 cv::Mat KeyFrame::GetGyroBias()
 {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     return (cv::Mat_<float>(3,1) << mImuBias.bwx, mImuBias.bwy, mImuBias.bwz);
 }
 
 cv::Mat KeyFrame::GetAccBias()
 {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     return (cv::Mat_<float>(3,1) << mImuBias.bax, mImuBias.bay, mImuBias.baz);
 }
 
 IMU::Bias KeyFrame::GetImuBias()
 {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     return mImuBias;
 }
 
 boost::interprocess::offset_ptr<Map>  KeyFrame::GetMap()
 {
-    std::scoped_lock<mutex> lock(mMutexMap);
+    std::unique_lock<mutex> lock(mMutexMap);
     return mpMap;
 }
 
 void KeyFrame::UpdateMap(boost::interprocess::offset_ptr<Map>  pMap)
 {
-    std::scoped_lock<mutex> lock(mMutexMap);
+    std::unique_lock<mutex> lock(mMutexMap);
     mpMap = pMap;
 }
 
@@ -1752,7 +1752,7 @@ bool KeyFrame::ProjectPointUnDistort(boost::interprocess::offset_ptr<MapPoint>  
 }
 
 cv::Mat KeyFrame::GetRightPose() {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
 
     cv::Mat Rrl = mTlr.rowRange(0,3).colRange(0,3).t();
     cv::Mat Rlw = Tcw.rowRange(0,3).colRange(0,3).clone();
@@ -1770,7 +1770,7 @@ cv::Mat KeyFrame::GetRightPose() {
 }
 
 cv::Mat KeyFrame::GetRightPoseInverse() {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     cv::Mat Rrl = mTlr.rowRange(0,3).colRange(0,3).t();
     cv::Mat Rlw = Tcw.rowRange(0,3).colRange(0,3).clone();
     cv::Mat Rwr = (Rrl * Rlw).t();
@@ -1788,7 +1788,7 @@ cv::Mat KeyFrame::GetRightPoseInverse() {
 }
 
 cv::Mat KeyFrame::GetRightPoseInverseH() {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     cv::Mat Rrl = mTlr.rowRange(0,3).colRange(0,3).t();
     cv::Mat Rlw = Tcw.rowRange(0,3).colRange(0,3).clone();
     cv::Mat Rwr = (Rrl * Rlw).t();
@@ -1808,7 +1808,7 @@ cv::Mat KeyFrame::GetRightPoseInverseH() {
 }
 
 cv::Mat KeyFrame::GetRightCameraCenter() {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     cv::Mat Rwl = Tcw.rowRange(0,3).colRange(0,3).t();
     cv::Mat tlr = mTlr.rowRange(0,3).col(3);
     cv::Mat twl = Ow.clone();
@@ -1819,7 +1819,7 @@ cv::Mat KeyFrame::GetRightCameraCenter() {
 }
 
 cv::Mat KeyFrame::GetRightRotation() {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     cv::Mat Rrl = mTlr.rowRange(0,3).colRange(0,3).t();
     cv::Mat Rlw = Tcw.rowRange(0,3).colRange(0,3).clone();
     cv::Mat Rrw = Rrl * Rlw;
@@ -1829,7 +1829,7 @@ cv::Mat KeyFrame::GetRightRotation() {
 }
 
 cv::Mat KeyFrame::GetRightTranslation() {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     cv::Mat Rrl = mTlr.rowRange(0,3).colRange(0,3).t();
     cv::Mat tlw = Tcw.rowRange(0,3).col(3).clone();
     cv::Mat trl = - Rrl * mTlr.rowRange(0,3).col(3);
@@ -1850,22 +1850,22 @@ void KeyFrame::SetKeyFrameDatabase(KeyFrameDatabase* pKFDB)
 }
 
 cv::Matx33f KeyFrame::GetRotation_() {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     return Tcw_.get_minor<3,3>(0,0);
 }
 
 cv::Matx31f KeyFrame::GetTranslation_() {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     return Tcw_.get_minor<3,1>(0,3);
 }
 
 cv::Matx31f KeyFrame::GetCameraCenter_() {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     return Ow_;
 }
 
 cv::Matx33f KeyFrame::GetRightRotation_() {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     cv::Matx33f Rrl = Tlr_.get_minor<3,3>(0,0).t();
     cv::Matx33f Rlw = Tcw_.get_minor<3,3>(0,0);
     cv::Matx33f Rrw = Rrl * Rlw;
@@ -1874,7 +1874,7 @@ cv::Matx33f KeyFrame::GetRightRotation_() {
 }
 
 cv::Matx31f KeyFrame::GetRightTranslation_() {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     cv::Matx33f Rrl = Tlr_.get_minor<3,3>(0,0).t();
     cv::Matx31f tlw = Tcw_.get_minor<3,1>(0,3);
     cv::Matx31f trl = - Rrl * Tlr_.get_minor<3,1>(0,3);
@@ -1885,7 +1885,7 @@ cv::Matx31f KeyFrame::GetRightTranslation_() {
 }
 
 cv::Matx44f KeyFrame::GetRightPose_() {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
 
     cv::Matx33f Rrl = Tlr_.get_minor<3,3>(0,0).t();
     cv::Matx33f Rlw = Tcw_.get_minor<3,3>(0,0);
@@ -1905,7 +1905,7 @@ cv::Matx44f KeyFrame::GetRightPose_() {
 }
 
 cv::Matx31f KeyFrame::GetRightCameraCenter_() {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     cv::Matx33f Rwl = Tcw_.get_minor<3,3>(0,0).t();
     cv::Matx31f tlr = Tlr_.get_minor<3,1>(0,3);
 
@@ -1924,7 +1924,7 @@ cv::Matx31f KeyFrame::UnprojectStereo_(int i) {
         const float y = (v-cy)*z*invfy;
         cv::Matx31f x3Dc(x,y,z);
 
-        std::scoped_lock<mutex> lock(mMutexPose);
+        std::unique_lock<mutex> lock(mMutexPose);
         return Twc_.get_minor<3,3>(0,0) * x3Dc + Twc_.get_minor<3,1>(0,3);
     }
     else
@@ -1933,7 +1933,7 @@ cv::Matx31f KeyFrame::UnprojectStereo_(int i) {
 
 cv::Matx44f KeyFrame::GetPose_()
 {
-    std::scoped_lock<mutex> lock(mMutexPose);
+    std::unique_lock<mutex> lock(mMutexPose);
     return Tcw_;
 }
 

@@ -244,7 +244,7 @@ void Preintegrated::Initialize(const Bias &b_)
 
 void Preintegrated::Reintegrate()
 {
-    std::scoped_lock<std::mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     const std::vector<integrable> aux = mvMeasurements;
     Initialize(bu);
     for(size_t i=0;i<aux.size();i++)
@@ -313,8 +313,8 @@ void Preintegrated::MergePrevious(Preintegrated* pPrev)
     if (pPrev==this)
         return;
 
-    std::scoped_lock<std::mutex> lock1(mMutex);
-    std::scoped_lock<std::mutex> lock2(pPrev->mMutex);
+    std::scoped_lock<> lock1(mMutex, pPrev->mMutex));
+    //std::scoped_lock<std::mutex> lock2(pPrev->mMutex);
     Bias bav;
     bav.bwx = bu.bwx;
     bav.bwy = bu.bwy;
@@ -336,7 +336,7 @@ void Preintegrated::MergePrevious(Preintegrated* pPrev)
 
 void Preintegrated::SetNewBias(const Bias &bu_)
 {
-    std::scoped_lock<std::mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     bu = bu_;
 
     db.at<float>(0) = bu_.bwx-b.bwx;
@@ -349,20 +349,20 @@ void Preintegrated::SetNewBias(const Bias &bu_)
 
 IMU::Bias Preintegrated::GetDeltaBias(const Bias &b_)
 {
-    std::scoped_lock<std::mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     return IMU::Bias(b_.bax-b.bax,b_.bay-b.bay,b_.baz-b.baz,b_.bwx-b.bwx,b_.bwy-b.bwy,b_.bwz-b.bwz);
 }
 
 cv::Mat Preintegrated::GetDeltaRotation(const Bias &b_)
 {
-    std::scoped_lock<std::mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     cv::Mat dbg = (cv::Mat_<float>(3,1) << b_.bwx-b.bwx,b_.bwy-b.bwy,b_.bwz-b.bwz);
     return NormalizeRotation(dR*ExpSO3(JRg*dbg));
 }
 
 cv::Mat Preintegrated::GetDeltaVelocity(const Bias &b_)
 {
-    std::scoped_lock<std::mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     cv::Mat dbg = (cv::Mat_<float>(3,1) << b_.bwx-b.bwx,b_.bwy-b.bwy,b_.bwz-b.bwz);
     cv::Mat dba = (cv::Mat_<float>(3,1) << b_.bax-b.bax,b_.bay-b.bay,b_.baz-b.baz);
     return dV + JVg*dbg + JVa*dba;
@@ -370,7 +370,7 @@ cv::Mat Preintegrated::GetDeltaVelocity(const Bias &b_)
 
 cv::Mat Preintegrated::GetDeltaPosition(const Bias &b_)
 {
-    std::scoped_lock<std::mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     cv::Mat dbg = (cv::Mat_<float>(3,1) << b_.bwx-b.bwx,b_.bwy-b.bwy,b_.bwz-b.bwz);
     cv::Mat dba = (cv::Mat_<float>(3,1) << b_.bax-b.bax,b_.bay-b.bay,b_.baz-b.baz);
     return dP + JPg*dbg + JPa*dba;
@@ -378,61 +378,61 @@ cv::Mat Preintegrated::GetDeltaPosition(const Bias &b_)
 
 cv::Mat Preintegrated::GetUpdatedDeltaRotation()
 {
-    std::scoped_lock<std::mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     return NormalizeRotation(dR*ExpSO3(JRg*db.rowRange(0,3)));
 }
 
 cv::Mat Preintegrated::GetUpdatedDeltaVelocity()
 {
-    std::scoped_lock<std::mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     return dV + JVg*db.rowRange(0,3) + JVa*db.rowRange(3,6);
 }
 
 cv::Mat Preintegrated::GetUpdatedDeltaPosition()
 {
-    std::scoped_lock<std::mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     return dP + JPg*db.rowRange(0,3) + JPa*db.rowRange(3,6);
 }
 
 cv::Mat Preintegrated::GetOriginalDeltaRotation()
 {
-    std::scoped_lock<std::mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     return dR.clone();
 }
 
 cv::Mat Preintegrated::GetOriginalDeltaVelocity()
 {
-    std::scoped_lock<std::mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     return dV.clone();
 }
 
 cv::Mat Preintegrated::GetOriginalDeltaPosition()
 {
-    std::scoped_lock<std::mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     return dP.clone();
 }
 
 Bias Preintegrated::GetOriginalBias()
 {
-    std::scoped_lock<std::mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     return b;
 }
 
 Bias Preintegrated::GetUpdatedBias()
 {
-    std::scoped_lock<std::mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     return bu;
 }
 
 cv::Mat Preintegrated::GetDeltaBias()
 {
-    std::scoped_lock<std::mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     return db.clone();
 }
 
 Eigen::Matrix<double,15,15> Preintegrated::GetInformationMatrix()
 {
-    std::scoped_lock<std::mutex> lock(mMutex);
+    std::unique_lock<std::mutex> lock(mMutex);
     if(Info.empty())
     {
         Info = cv::Mat::zeros(15,15,CV_32F);

@@ -1242,7 +1242,7 @@ void Tracking::SetStepByStep(bool bSet)
 cv::Mat Tracking::GrabImageStereo(const cv::Mat &imRectLeft, const cv::Mat &imRectRight, const double &timestamp, string filename)
 {
     //added a mutex lock
-    std::scoped_lock<mutex> lock(mMutexTracks);   
+    std::unique_lock<mutex> lock(mMutexTracks);   
     
     mImGray = imRectLeft;
     cv::Mat imGrayRight = imRectRight;
@@ -1391,7 +1391,7 @@ cv::Mat Tracking::GrabImageMonocular(const cv::Mat &im, const double &timestamp,
 
 void Tracking::GrabImuData(const IMU::Point &imuMeasurement)
 {
-    std::scoped_lock<mutex> lock(mMutexImuQueue);
+    std::unique_lock<mutex> lock(mMutexImuQueue);
     mlQueueImuData.push_back(imuMeasurement);
 }
 
@@ -1419,7 +1419,7 @@ void Tracking::PreintegrateIMU()
     {
         bool bSleep = false;
         {
-            std::scoped_lock<mutex> lock(mMutexImuQueue);
+            std::unique_lock<mutex> lock(mMutexImuQueue);
             if(!mlQueueImuData.empty())
             {
                 IMU::Point* m = &mlQueueImuData.front();
@@ -1694,7 +1694,7 @@ void Tracking::Track()
         if(mLastFrame.mTimeStamp>mCurrentFrame.mTimeStamp)
         {
             cerr << "ERROR: Frame with a timestamp older than previous frame detected!" << endl;
-            std::scoped_lock<mutex> lock(mMutexImuQueue);
+            std::unique_lock<mutex> lock(mMutexImuQueue);
             mlQueueImuData.clear();
             CreateMapInAtlas();
             return;
@@ -1756,7 +1756,7 @@ void Tracking::Track()
     mbCreatedMap = false;
 
     // Get Map Mutex -> Map cannot be changed
-    std::scoped_lock<mutex> lock(pCurrentMap->mMutexMapUpdate);
+    std::unique_lock<mutex> lock(pCurrentMap->mMutexMapUpdate);
 
     mbMapUpdated = false;
 

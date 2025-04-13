@@ -317,45 +317,45 @@ void Viewer::Run()
 
 void Viewer::RequestFinish()
 {
-    std::scoped_lock<mutex> lock(mMutexFinish);
+    std::unique_lock<mutex> lock(mMutexFinish);
     mbFinishRequested = true;
 }
 
 bool Viewer::CheckFinish()
 {
-    std::scoped_lock<mutex> lock(mMutexFinish);
+    std::unique_lock<mutex> lock(mMutexFinish);
     return mbFinishRequested;
 }
 
 void Viewer::SetFinish()
 {
-    std::scoped_lock<mutex> lock(mMutexFinish);
+    std::unique_lock<mutex> lock(mMutexFinish);
     mbFinished = true;
 }
 
 bool Viewer::isFinished()
 {
-    std::scoped_lock<mutex> lock(mMutexFinish);
+    std::unique_lock<mutex> lock(mMutexFinish);
     return mbFinished;
 }
 
 void Viewer::RequestStop()
 {
-    std::scoped_lock<mutex> lock(mMutexStop);
+    std::unique_lock<mutex> lock(mMutexStop);
     if(!mbStopped)
         mbStopRequested = true;
 }
 
 bool Viewer::isStopped()
 {
-    std::scoped_lock<mutex> lock(mMutexStop);
+    std::unique_lock<mutex> lock(mMutexStop);
     return mbStopped;
 }
 
 bool Viewer::Stop()
 {
-    std::scoped_lock<mutex> lock(mMutexStop);
-    std::scoped_lock<mutex> lock2(mMutexFinish);
+    std::scoped_lock lock(mMutexStop, mMutexFinish);
+    //std::unique_lock<mutex> lock2(mMutexFinish);
 
     if(mbFinishRequested)
         return false;
@@ -372,7 +372,7 @@ bool Viewer::Stop()
 
 void Viewer::Release()
 {
-    std::scoped_lock<mutex> lock(mMutexStop);
+    std::unique_lock<mutex> lock(mMutexStop);
     mbStopped = false;
 }
 

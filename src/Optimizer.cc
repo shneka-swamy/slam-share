@@ -875,7 +875,7 @@ int Optimizer::PoseOptimization(Frame *pFrame)
     const float deltaStereo = sqrt(7.815);
 
     {
-    std::scoped_lock<mutex> lock(MapPoint::mGlobalMutex);
+    std::unique_lock<mutex> lock(MapPoint::mGlobalMutex);
 
     for(int i=0; i<N; i++)
     {
@@ -1591,7 +1591,7 @@ void Optimizer::LocalBundleAdjustment(boost::interprocess::offset_ptr<KeyFrame> 
     bool bWriteStats = false;
 
     // Get Map Mutex
-    std::scoped_lock<mutex> lock(pCurrentMap->mMutexMapUpdate);
+    std::unique_lock<mutex> lock(pCurrentMap->mMutexMapUpdate);
 
     if(!vToErase.empty())
     {
@@ -2119,7 +2119,7 @@ list_of_available_ids.reserve(500);
     }
 
     // Get Map Mutex
-    std::scoped_lock<mutex> lock(pMap->mMutexMapUpdate);
+    std::unique_lock<mutex> lock(pMap->mMutexMapUpdate);
 
     if(!vToErase.empty())
     {
@@ -2406,7 +2406,7 @@ void Optimizer::OptimizeEssentialGraph(boost::interprocess::offset_ptr<Map>  pMa
     optimizer.optimize(20);
     optimizer.computeActiveErrors();
     float errEnd = optimizer.activeRobustChi2();
-    std::scoped_lock<mutex> lock(pMap->mMutexMapUpdate);
+    std::unique_lock<mutex> lock(pMap->mMutexMapUpdate);
 
     // SE3 Pose Recovering. Sim3:[sR t;0 1] -> SE3:[R t/s;0 1]
     for(size_t i=0;i<vpKFs.size();i++)
@@ -2721,7 +2721,7 @@ void Optimizer::OptimizeEssentialGraph6DoF(boost::interprocess::offset_ptr<KeyFr
     optimizer.initializeOptimization();
     optimizer.optimize(20);
 
-    std::scoped_lock<mutex> lock(pMap->mMutexMapUpdate);
+    std::unique_lock<mutex> lock(pMap->mMutexMapUpdate);
 
     // SE3 Pose Recovering. Sim3:[sR t;0 1] -> SE3:[R t/s;0 1]
     for(boost::interprocess::offset_ptr<KeyFrame>  pKFi : vpNonFixedKFs)
@@ -3005,7 +3005,7 @@ void Optimizer::OptimizeEssentialGraph(boost::interprocess::offset_ptr<KeyFrame>
 
     std::cout<<"OptimizeEssentialGraph 9\n";
 
-    std::scoped_lock<mutex> lock(pMap->mMutexMapUpdate);
+    std::unique_lock<mutex> lock(pMap->mMutexMapUpdate);
 
     // SE3 Pose Recovering. Sim3:[sR t;0 1] -> SE3:[R t/s;0 1]
     for(boost::interprocess::offset_ptr<KeyFrame>  pKFi : vpNonFixedKFs)
@@ -3252,7 +3252,7 @@ void Optimizer::OptimizeEssentialGraph(boost::interprocess::offset_ptr<KeyFrame>
     optimizer.setVerbose(false);
     optimizer.optimize(20);
 
-    std::scoped_lock<mutex> lock(pMap->mMutexMapUpdate);
+    std::unique_lock<mutex> lock(pMap->mMutexMapUpdate);
 
     // SE3 Pose Recovering. Sim3:[sR t;0 1] -> SE3:[R t/s;0 1]
     for(size_t i=0;i<vpKFs.size();i++)
@@ -4559,7 +4559,7 @@ void Optimizer::LocalInertialBA(boost::interprocess::offset_ptr<KeyFrame> pKF, b
     }
 
     // Get Map Mutex and erase outliers
-    std::scoped_lock<mutex> lock(pMap->mMutexMapUpdate);
+    std::unique_lock<mutex> lock(pMap->mMutexMapUpdate);
 
     if((2*err < err_end || isnan(err) || isnan(err_end)) && !bLarge)
     {
@@ -5653,7 +5653,7 @@ void Optimizer::MergeBundleAdjustmentVisual(boost::interprocess::offset_ptr<KeyF
     }
 
     // Get Map Mutex
-    std::scoped_lock<mutex> lock(pCurrentKF->GetMap()->mMutexMapUpdate);
+    std::unique_lock<mutex> lock(pCurrentKF->GetMap()->mMutexMapUpdate);
 
     if(!vToErase.empty())
     {
@@ -6030,7 +6030,7 @@ void Optimizer::LocalBundleAdjustment(boost::interprocess::offset_ptr<KeyFrame> 
     Verbose::PrintMess("LBA: Second optimization, there are " + to_string(badMonoMP) + " monocular and " + to_string(badStereoMP) + " sterero bad edges", Verbose::VERBOSITY_DEBUG);
 
     // Get Map Mutex
-    std::scoped_lock<mutex> lock(pMainKF->GetMap()->mMutexMapUpdate);
+    std::unique_lock<mutex> lock(pMainKF->GetMap()->mMutexMapUpdate);
 
     if(!vToErase.empty())
     {
@@ -6685,7 +6685,7 @@ void Optimizer::MergeInertialBA(boost::interprocess::offset_ptr<KeyFrame>  pCurr
     }
 
     // Get Map Mutex and erase outliers
-    std::scoped_lock<mutex> lock(pMap->mMutexMapUpdate);
+    std::unique_lock<mutex> lock(pMap->mMutexMapUpdate);
     if(!vToErase.empty())
     {
         for(size_t i=0;i<vToErase.size();i++)
@@ -6819,7 +6819,7 @@ int Optimizer::PoseInertialOptimizationLastKeyFrame(Frame *pFrame, bool bRecInit
 
 
     {
-        std::scoped_lock<mutex> lock(MapPoint::mGlobalMutex);
+        std::unique_lock<mutex> lock(MapPoint::mGlobalMutex);
 
         for(int i=0; i<N; i++)
         {
@@ -7213,7 +7213,7 @@ int Optimizer::PoseInertialOptimizationLastFrame(Frame *pFrame, bool bRecInit)
     const float thHuberStereo = sqrt(7.815);
 
     {
-        std::scoped_lock<mutex> lock(MapPoint::mGlobalMutex);
+        std::unique_lock<mutex> lock(MapPoint::mGlobalMutex);
 
         for(int i=0; i<N; i++)
         {
@@ -7847,7 +7847,7 @@ void Optimizer::OptimizeEssentialGraph4DoF(boost::interprocess::offset_ptr<Map> 
     optimizer.computeActiveErrors();
     optimizer.optimize(20);
 
-    std::scoped_lock<mutex> lock(pMap->mMutexMapUpdate);
+    std::unique_lock<mutex> lock(pMap->mMutexMapUpdate);
 
     // SE3 Pose Recovering. Sim3:[sR t;0 1] -> SE3:[R t/s;0 1]
     for(size_t i=0;i<vpKFs.size();i++)
