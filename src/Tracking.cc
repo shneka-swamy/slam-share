@@ -2005,7 +2005,9 @@ void Tracking::Track()
             std::cout<<"Inside not mb only tracking"<<endl;
             if(bOK)
             {
+                std::cout<<"Before Track local map"<<endl;
                 bOK = TrackLocalMap();
+                std::cout<<"After Track local map"<<endl;
 
             }
             if(!bOK)
