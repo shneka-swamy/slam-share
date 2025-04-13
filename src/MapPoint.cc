@@ -383,7 +383,7 @@ void MapPoint::SetBadFlag()
 {
     map<boost::interprocess::offset_ptr<KeyFrame> , tuple<int,int>> obs;
     {
-        std::scoped_lock<mutex> lock1(mMutexFeatures, mMutexPos);
+        std::scoped_lock lock1(mMutexFeatures, mMutexPos);
         //std::unique_lock<mutex> lock2(mMutexPos);
         mbBad=true;
         obs.insert(mObservations->begin(), mObservations->end());
@@ -473,7 +473,7 @@ bool MapPoint::isBad()
 {
     // std::scoped_lock<mutex> lock1(mMutexFeatures,std::defer_lock);
     // std::scoped_lock lock2(mMutexPos,std::defer_lock);
-    std::scoped_lock<mutex, mutex> lock(mMutexFeatures, mMutexPos);
+    std::scoped_lock lock(mMutexFeatures, mMutexPos);
     //std::unique_lock<mutex> lock2(mMutexPos);
     //lock(lock1, lock2);
 
@@ -665,7 +665,7 @@ void MapPoint::UpdateNormalAndDepth()
     const int nLevels = pRefKF->mnScaleLevels;
 
     {
-        std::scoped_lock<mutex> lock3(mMutexPos);
+        std::unique_lock<mutex> lock3(mMutexPos);
         mfMaxDistance = dist*levelScaleFactor;
         mfMinDistance = mfMaxDistance/pRefKF->mvScaleFactors->at(nLevels-1);//mfMinDistance = mfMaxDistance/pRefKF->mvScaleFactors[nLevels-1];
         //mNormalVector = normal/n;
