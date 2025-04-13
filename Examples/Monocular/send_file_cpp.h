@@ -88,7 +88,7 @@ private:
     }
     else
       {
-	boost::mutex::scoped_lock lk(debug_mutex);
+	boost::mutex::unique_lock lk(debug_mutex);
 	std::cout << "Error: " << err.message() << '\n';
       };
     
@@ -104,12 +104,12 @@ private:
 	    source_file.read(buf.c_array(), (std::streamsize)buf.size());
 	    if(source_file.gcount()<= 0)
 	      {
-		boost::mutex::scoped_lock lk(debug_mutex);
+		boost::mutex::unique_lock lk(debug_mutex);
 		std::cout << "read file error" << std::endl;
 		return;
 	      };
 	    {
-	      boost::mutex::scoped_lock lk(debug_mutex);
+	      boost::mutex::unique_lock lk(debug_mutex);
 	      std::cout << "Send " << source_file.gcount() << "bytes, total: " << source_file.tellg() << " bytes.\n";
 	    }
 	    boost::asio::async_write(socket_, boost::asio::buffer(buf.c_array(), source_file.gcount()),boost::bind(&async_tcp_client::handle_write_file, this, boost::asio::placeholders::error));
@@ -121,7 +121,7 @@ private:
       }
     else
       {
-	boost::mutex::scoped_lock lk(debug_mutex);
+	boost::mutex::unique_lock lk(debug_mutex);
 	std::cout << "Error: " << err.message() << "\n";
       }
   };
@@ -145,7 +145,7 @@ public:
   {
     if(debugmode)
       {
-	boost::mutex::scoped_lock lk(debug_mutex);
+	boost::mutex::unique_lock lk(debug_mutex);
 	debug_global << __FUNCTION__ << std::endl;
       }
     async_read_until(socket_, request_buf, "\n\n", boost::bind(&async_tcp_connection::handle_read_request, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
@@ -168,7 +168,7 @@ private:
       }
     if(debugmode)
       {
-	boost::mutex::scoped_lock lk(debug_mutex);
+	boost::mutex::unique_lock lk(debug_mutex);
 	debug_global << __FUNCTION__ << "(" << bytes_transferred << ")" <<", in_avail = " << request_buf.in_avail() << ", size = " << request_buf.size() << ", max_size = " << request_buf.max_size() << ".\n";
       }
     std::istream request_stream(&request_buf);
@@ -178,7 +178,7 @@ private:
     request_stream.read(buf.c_array(), 2);
     if(debugmode)
       {
-	boost::mutex::scoped_lock lk(debug_mutex);
+	boost::mutex::unique_lock lk(debug_mutex);
 	debug_global << file_path << " size is " << file_size << ", tellg = " << request_stream.tellg() << std::endl;
       }
     size_t pos = file_path.find_last_of('\\');
@@ -192,7 +192,7 @@ private:
       {
 	if(debugmode)
 	  {
-	    boost::mutex::scoped_lock lk(debug_mutex);
+	    boost::mutex::unique_lock lk(debug_mutex);
 	    debug_global << __LINE__ << "Failed to open: " << file_path << std::endl;
 	  }
 	return;
@@ -202,7 +202,7 @@ private:
 		request_stream.read(buf.c_array(), (std::streamsize)buf.size());
 		if(debugmode)
 		  {
-		    boost::mutex::scoped_lock lk(debug_mutex);
+		    boost::mutex::unique_lock lk(debug_mutex);
 		    debug_global << __FUNCTION__ << " write " << request_stream.gcount() << " bytes.\n";
 		  }
 		output_file.write(buf.c_array(), request_stream.gcount());
@@ -218,7 +218,7 @@ private:
 	output_file.write(buf.c_array(), (std::streamsize)bytes_transferred);
 	if(debugmode)
 	  {
-	    boost::mutex::scoped_lock lk(debug_mutex);
+	    boost::mutex::unique_lock lk(debug_mutex);
 	    debug_global << __FUNCTION__ << " recv " << output_file.tellp() << " bytes."<< std::endl;
 	  }
 	if (output_file.tellp()>=(std::streamsize)file_size)
@@ -237,7 +237,7 @@ private:
   {
     if(debugmode)
       {
-	boost::mutex::scoped_lock lk(debug_mutex);
+	boost::mutex::unique_lock lk(debug_mutex);
 	debug_global << __FUNCTION__ << " in " << function_name <<" due to " << err <<" " << err.message()<< std::endl;
       }
   }
@@ -258,7 +258,7 @@ public:
   {
     if(debugmode)
       {
-	boost::mutex::scoped_lock lk(debug_mutex);
+	boost::mutex::unique_lock lk(debug_mutex);
 	debug_global << __FUNCTION__ << " " << e << ", " << e.message()<<std::endl;
       }
     if (!e)
@@ -282,13 +282,13 @@ void send_data(std::string const& filename, std::string const& adr = "localhost:
 	{
 	  boost::asio::io_context io_service;
 	  {
-	    boost::mutex::scoped_lock lk(debug_mutex);
+	    boost::mutex::unique_lock lk(debug_mutex);
 	    std::cout << "Adress is: " << adr << " and file is: " << filename << '\n';
 	  }
 
 	  if(debugmode)
 	    {
-	      boost::mutex::scoped_lock lk(debug_mutex);
+	      boost::mutex::unique_lock lk(debug_mutex);
 	      debug_global << adr << '\n';
 	    }
 

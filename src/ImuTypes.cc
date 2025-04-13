@@ -313,7 +313,7 @@ void Preintegrated::MergePrevious(Preintegrated* pPrev)
     if (pPrev==this)
         return;
 
-    std::scoped_lock<> lock1(mMutex, pPrev->mMutex));
+    std::scoped_lock lock1(mMutex, pPrev->mMutex));
     //std::scoped_lock<std::mutex> lock2(pPrev->mMutex);
     Bias bav;
     bav.bwx = bu.bwx;

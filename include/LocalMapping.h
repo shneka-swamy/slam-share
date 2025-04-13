@@ -72,7 +72,7 @@ public:
     bool isFinished();
 
     int KeyframesInQueue(){
-        std::scoped_lock<std::mutex> lock(mMutexNewKFs);
+        std::unique_lock<std::mutex> lock(mMutexNewKFs);
         return mlNewKeyFrames.size();
     }
 

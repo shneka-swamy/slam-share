@@ -1384,8 +1384,8 @@ void LoopClosing::MergeLocal()
 
      std::cout<<"Merge local 6\n";
     {
-        std::unique_lock currentLock(pCurrentMap->mMutexMapUpdate, pMergeMap->mMutexMapUpdate ); // We update the current map with the Merge information
-        //std::scoped_lock<mutex> mergeLock(pMergeMap->mMutexMapUpdate); // We remove the Kfs and MPs in the merged area from the old map
+        std::scoped_lock currentLock(pCurrentMap->mMutexMapUpdate, pMergeMap->mMutexMapUpdate ); // We update the current map with the Merge information
+        //std::scoped_lock mergeLock(pMergeMap->mMutexMapUpdate); // We remove the Kfs and MPs in the merged area from the old map
 
         for(boost::interprocess::offset_ptr<KeyFrame>  pKFi : spLocalWindowKFs)
         {
@@ -1606,8 +1606,8 @@ void LoopClosing::MergeLocal()
 
         {
             // Get Merge Map Mutex
-            std::scoped_lock<mutex> currentLock(pCurrentMap->mMutexMapUpdate, pMergeMap->mMutexMapUpdate); // We update the current map with the Merge information
-            //std::scoped_lock<mutex> mergeLock(pMergeMap->mMutexMapUpdate); // We remove the Kfs and MPs in the merged area from the old map
+            std::scoped_lock currentLock(pCurrentMap->mMutexMapUpdate, pMergeMap->mMutexMapUpdate); // We update the current map with the Merge information
+            //std::scoped_lock mergeLock(pMergeMap->mMutexMapUpdate); // We remove the Kfs and MPs in the merged area from the old map
 
             for(boost::interprocess::offset_ptr<KeyFrame>  pKFi : vpCurrentMapKFs)
             {
@@ -1750,7 +1750,7 @@ void LoopClosing::MergeLocal2()
     // Load KFs and MPs from merge map
     {
         // Get Merge Map Mutex (This section stops tracking!!)
-        std::scoped_lock<mutex> currentLock(pCurrentMap->mMutexMapUpdate, pMergeMap->mMutexMapUpdate); // We update the current map with the Merge information
+        std::scoped_lock currentLock(pCurrentMap->mMutexMapUpdate, pMergeMap->mMutexMapUpdate); // We update the current map with the Merge information
         //std::unique_lock<mutex> mergeLock(pMergeMap->mMutexMapUpdate); // We remove the Kfs and MPs in the merged area from the old map
 
 

@@ -1364,7 +1364,7 @@ void KeyFrame::SetBadFlag()
     }
 
     {
-        std::scoped_lock<mutex,mutex> lock(mMutexConnections, mMutexFeatures);
+        std::scoped_lock lock(mMutexConnections, mMutexFeatures);
         //std::unique_lock<mutex> lock1(mMutexFeatures);
 
         //old-code
@@ -1465,8 +1465,8 @@ void KeyFrame::SetBadFlag()
 
 bool KeyFrame::isBad()
 {
-    //std::scoped_lock<mutex> lock(mMutexConnections);
-    //std::scoped_lock<mutex> try_lock(mMutexConnections);
+    //std::scoped_lock lock(mMutexConnections);
+    //std::scoped_lock try_lock(mMutexConnections);
     //Aditya: Removed lock to check somethings.
     return mbBad;
 }
@@ -1575,7 +1575,7 @@ float KeyFrame::ComputeSceneMedianDepth(const int q)
     vector<boost::interprocess::offset_ptr<MapPoint> > vpMapPoints;
     cv::Mat Tcw_;
     {
-        std::scoped_lock<mutex, mutex> lock(mMutexFeatures,mMutexPose);
+        std::scoped_lock lock(mMutexFeatures,mMutexPose);
         //std::unique_lock<mutex> lock2(mMutexPose);
         vpMapPoints.assign(mvpMapPoints.get()->begin(),mvpMapPoints.get()->end());// = mvpMapPoints;
         /*
