@@ -2880,6 +2880,7 @@ bool Tracking::TrackLocalMap()
     std::chrono::steady_clock::time_point time_StartLMUpdate = std::chrono::steady_clock::now();
 #endif
     UpdateLocalMap();
+    std::cout<<"Update Local map is done"<<endl;
 #ifdef REGISTER_TIMES
     std::chrono::steady_clock::time_point time_StartSearchLP = std::chrono::steady_clock::now();
 
@@ -3357,10 +3358,14 @@ void Tracking::SearchLocalPoints()
 void Tracking::UpdateLocalMap()
 {
     // This is for visualization
+    std::cout<<"Before set reference map points"<<endl;
     mpAtlas->SetReferenceMapPoints(mvpLocalMapPoints);
+    std::cout<<"After set reference map points"<<endl;
     // Update
     UpdateLocalKeyFrames();
+    std::cout<<"After Update Local Keyframes"<<endl;
     UpdateLocalPoints();
+    std::cout<<"After update local points"<<endl;
 }
 
 void Tracking::UpdateLocalPoints()
