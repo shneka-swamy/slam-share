@@ -361,7 +361,7 @@ void MapPoint::EraseObservation(boost::interprocess::offset_ptr<KeyFrame>  pKF)
 
 std::map<boost::interprocess::offset_ptr<KeyFrame> , std::tuple<int,int>>  MapPoint::GetObservations()
 {
-    std::unique_lock<mutex> lock(mMutexFeatures);
+    std::unique_lock<mutex> lock(mMutexFeatures, adopt_lock);
     std::map<boost::interprocess::offset_ptr<KeyFrame> , std::tuple<int,int> > returnable;
 
     //for (auto const& x: mObservations){

@@ -3412,10 +3412,12 @@ void Tracking::UpdateLocalPoints()
 // NOTE: This function is same as that of ORB-SLAM3 with only the pointers changed to boost pointers
 void Tracking::UpdateLocalKeyFrames()
 {
+    std::cout<<"Entered tracking"<<endl;
     // Each map point vote for the keyframes in which it has been observed
     map<boost::interprocess::offset_ptr<KeyFrame> ,int> keyframeCounter;
     if(!mpAtlas->isImuInitialized() || (mCurrentFrame.mnId<mnLastRelocFrameId+2))
     {      
+        std::cout<<"Entered if condition"<<endl;
         for(int i=0; i<mCurrentFrame.N; i++)
         {
             boost::interprocess::offset_ptr<MapPoint>  pMP = mCurrentFrame.mvpMapPoints[i];
