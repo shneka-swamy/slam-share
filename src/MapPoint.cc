@@ -664,7 +664,7 @@ void MapPoint::UpdateNormalAndDepth()
     const float levelScaleFactor =  pRefKF->mvScaleFactors->at(level);//const float levelScaleFactor =  pRefKF->mvScaleFactors[level];
     const int nLevels = pRefKF->mnScaleLevels;
 
-    {
+    {>
         std::unique_lock<mutex> lock3(mMutexPos);
         mfMaxDistance = dist*levelScaleFactor;
         mfMinDistance = mfMaxDistance/pRefKF->mvScaleFactors->at(nLevels-1);//mfMinDistance = mfMaxDistance/pRefKF->mvScaleFactors[nLevels-1];
