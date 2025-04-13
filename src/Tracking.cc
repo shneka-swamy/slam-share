@@ -3500,6 +3500,7 @@ void Tracking::UpdateLocalKeyFrames()
 
         const vector<boost::interprocess::offset_ptr<KeyFrame> > vNeighs = pKF->GetBestCovisibilityKeyFrames(10);
 
+        std::cout << "[DEBUG] " << __func__ << ":" << __LINE__ << std::endl;
         for(vector<boost::interprocess::offset_ptr<KeyFrame> >::const_iterator itNeighKF=vNeighs.begin(), itEndNeighKF=vNeighs.end(); itNeighKF!=itEndNeighKF; itNeighKF++)
         {
             boost::interprocess::offset_ptr<KeyFrame>  pNeighKF = *itNeighKF;
@@ -3513,8 +3514,9 @@ void Tracking::UpdateLocalKeyFrames()
                 }
             }
         }
-
+        std::cout << "[DEBUG] " << __func__ << ":" << __LINE__ << std::endl;
         const set<boost::interprocess::offset_ptr<KeyFrame> > spChilds = pKF->GetChilds();
+        std::cout << "[DEBUG] " << __func__ << ":" << __LINE__ << std::endl;
         for(set<boost::interprocess::offset_ptr<KeyFrame> >::const_iterator sit=spChilds.begin(), send=spChilds.end(); sit!=send; sit++)
         {
             boost::interprocess::offset_ptr<KeyFrame>  pChildKF = *sit;
@@ -3528,6 +3530,7 @@ void Tracking::UpdateLocalKeyFrames()
                 }
             }
         }
+        std::cout << "[DEBUG] " << __func__ << ":" << __LINE__ << std::endl;
         boost::interprocess::offset_ptr<KeyFrame>  pParent = pKF->GetParent();
         if(pParent)
         {
@@ -3538,6 +3541,7 @@ void Tracking::UpdateLocalKeyFrames()
                 break;
             }
         }
+        std::cout << "[DEBUG] " << __func__ << ":" << __LINE__ << std::endl;
     }
 
     std::cout << "[DEBUG] " << __func__ << ":" << __LINE__ << std::endl;
