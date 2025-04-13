@@ -1239,7 +1239,9 @@ set<boost::interprocess::offset_ptr<KeyFrame> > KeyFrame::GetChilds()
 
 boost::interprocess::offset_ptr<KeyFrame>  KeyFrame::GetParent()
 {
+    std::cout << "[DEBUG] " << __func__ << ":" << __LINE__ << std::endl;
     std::unique_lock<mutex> lockCon(mMutexConnections);
+    std::cout << "[DEBUG] " << __func__ << ":" << __LINE__ << std::endl;
     return mpParent;
 }
 
