@@ -3402,11 +3402,12 @@ void Tracking::UpdateLocalPoints()
             // }
     
         }
+
         // if(count_debug >= 3){
         //     break;
-        // } 
-
+        // }
     }
+    std::cout << "[DEBUG] " << __func__ << ":" << __LINE__ << std::endl;
 }
 
 // NOTE: This function is same as that of ORB-SLAM3 with only the pointers changed to boost pointers
