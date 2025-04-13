@@ -3438,6 +3438,7 @@ void Tracking::UpdateLocalKeyFrames()
     }
     else
     {   
+        std::cout << "[DEBUG] " << __func__ << ":" << __LINE__ << std::endl;
         for(int i=0; i<mLastFrame.N; i++)
         {
             // Using lastframe since current frame has not matches yet
@@ -3459,7 +3460,7 @@ void Tracking::UpdateLocalKeyFrames()
             }
         }
     }
-
+    std::cout << "[DEBUG] " << __func__ << ":" << __LINE__ << std::endl;
 
     int max=0;
     boost::interprocess::offset_ptr<KeyFrame>  pKFmax= static_cast<boost::interprocess::offset_ptr<KeyFrame> >(NULL);
@@ -3467,6 +3468,7 @@ void Tracking::UpdateLocalKeyFrames()
     mvpLocalKeyFrames.clear();
     mvpLocalKeyFrames.reserve(3*keyframeCounter.size());
 
+    std::cout << "[DEBUG] " << __func__ << ":" << __LINE__ << std::endl;
     // All keyframes that observe a map point are included in the local map. Also check which keyframe shares most points
     for(map<boost::interprocess::offset_ptr<KeyFrame> ,int>::const_iterator it=keyframeCounter.begin(), itEnd=keyframeCounter.end(); it!=itEnd; it++)
     {
@@ -3485,6 +3487,7 @@ void Tracking::UpdateLocalKeyFrames()
         pKF->mnTrackReferenceForFrame = mCurrentFrame.mnId;
     }
 
+    std::cout << "[DEBUG] " << __func__ << ":" << __LINE__ << std::endl;
     // Include also some not-already-included keyframes that are neighbors to already-included keyframes
     //int count_debug = 5;
     for(vector<boost::interprocess::offset_ptr<KeyFrame> >::const_iterator itKF=mvpLocalKeyFrames.begin(), itEndKF=mvpLocalKeyFrames.end(); itKF!=itEndKF; itKF++)
@@ -3537,6 +3540,7 @@ void Tracking::UpdateLocalKeyFrames()
         }
     }
 
+    std::cout << "[DEBUG] " << __func__ << ":" << __LINE__ << std::endl;
     cout<<"Adding last 10 keyframes"<<endl;
     // Add 10 last temporal KFs (mainly for IMU)
     if((mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO) &&mvpLocalKeyFrames.size()<80)
@@ -3556,6 +3560,7 @@ void Tracking::UpdateLocalKeyFrames()
         }
     }
 
+    std::cout << "[DEBUG] " << __func__ << ":" << __LINE__ << std::endl;
     if(pKFmax)
     {
         mpReferenceKF = pKFmax;
